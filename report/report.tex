@@ -12,7 +12,7 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{url}
-\usepackage{bbm}
+%\usepackage{bbm}
 
 
 \usepackage[normalem]{ulem}
@@ -41,7 +41,7 @@
 %%%%%%%%% TITLE
 \title{Interactive Action Recognition using Relative Geometry Between Body Parts Across Multiple People}
 
-\author{Swami Sankaranarayanan and Kota Hara\\
+\author{Swami Sankaranarayanan, Kota Hara, Yiannis Aloimonos\\
 Center for Automation Research, University of Maryland, College Park, MD 20742\\
 {\tt\small \{swamiviv,kotahara\}@umiacs.umd.edu}
 % For a paper whose authors are all at the same institution,
@@ -84,8 +84,22 @@ The paper is organized as follows. In section 2, we show some related work. Sect
 \section{Related Work}
 
 \section{Action Localization}
+The action sequences that are collected from the Kinect consists of several irrelevant frames which does not contain the action that we are looking for. Thus, given a video sequence it becomes important to approximately localize the action. This is a mandatory pre-processing step to extract realiable features that completely describe the action that  we are interested in. We alos assume throughout this work that there is only one continuous action that takes place throughout a given video sequence. In this section, we decribe a heuristic way to localize the action in a given video. A given video sequence consists of the following parts:
+\begin{equation}
+<Init. Action - Main Action - Finish>
+\end{equation}
+The heuristic described here tries to acquire the frames corresponding to the Main Action  in an automated way. We perform the localization in two steps:
+\begin{itemize}
+\item Computing the action center frames
+\item Computing the start and end frames
+\end{itemize}
+
+The action center frame is computed as the frame where the distance between the interacting persons is the least. If there are multiple frames with the same distance value (this could occur since some interactions can last for a few frames), the action center frame is assigned as the minimum of those frames.
+
+The start(end) of any interaction in the video could be implied by a constant decrease(increase) in distance between two persons. Thus, we compute the distance between the persons at each frame and identify when the rate of change of distance goes above(start) or below (end) a given threshold $\delta$, which is a user input parameter. 
 
 
+As can be observed, this method does not yield us exact localization but an approximate one. In the subsequent section, we take care of this by imposing temporal smoothness on the features that we extract from each frame. 
 \section{Skeleton Representation}
 
 
