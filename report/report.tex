@@ -12,7 +12,7 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{url}
-\usepackage{bbm}
+%\usepackage{bbm}
 
 
 \usepackage[normalem]{ulem}
@@ -39,9 +39,9 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Interactive Action Recognition using Relative Geometry Between Body Parts}
+\title{Interactive Action Recognition using Relative Geometry Between Body Parts Across Multiple People}
 
-\author{Swami Sankaranarayanan and Kota Hara\\
+\author{Swami Sankaranarayanan, Kota Hara, Yiannis Aloimonos\\
 Center for Automation Research, University of Maryland, College Park, MD 20742\\
 {\tt\small \{swamiviv,kotahara\}@umiacs.umd.edu}
 % For a paper whose authors are all at the same institution,
@@ -63,51 +63,44 @@ In this work, we propose
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
+Human action recognition has been a major problem in computer vision community for many years. There are many applications of the human action recognition such as surveillance, health-care and human computer interaction. Most of the previous works focus on action recognition of a single person. The action classes considered in this scenario is limited to a simple action such as walking, running and jumping. 
 
-Action recognition from the body skeleton has been very active due to the advance of motion capture system such as Kinect. Action recognition systems use the skeleton information as an input to predict the action taking place. Typically the skeleton information is given in the form of 3d locations of a set of body joints. Many action recognition systems directly use these information as the input or convert the location information into a set of joint angles and then use them as the input. The focus of the research has been on the recognition part. 
+On the other hand, there are several works which deal with action classes involved with multiple people. These action classes are more complex to recognize than the single-person actions due to the complexity of the actions. The actions are defined not only by the motion of one person but also their interactive motions. We call these multiple-people actions as interactive actions.
 
-\cite{Vemulapalli2013} proposed a new skeleton representation based on relative geometry across body parts and achieve the state of the art results on several standard action recognition dataset. They compute the translation and rotation between each pair of body parts and map it to the tangent space to get a feature vector. The benefit of their approach compared to the previously adopted skeleton representation is that their method capture the relationship between body parts that are not directly connected each other. Thus, their method is more capable of representing actions in which the relationship between non-connected body parts, such as left arm and right arm, is important.
+The examples of interactive actions we consider in this work are exchanging objects and greetings between two people. For exchanging objects, we consider different types of the objects such as cards, a ball and a chair. Depending on the object being exchanged, their interactive movement come out in a different form. For greetings, we consider interactive actions such as shaking hands and bowing. Our goal is to recognize these different types of interactive actions from the 3d skeleton information.
 
-In this work, our task is to classify action performed between two people. We also use relative geometry across body parts but unlike their work, we also consider relative geometry between body parts across two people. This representation enables us to capture two people's interaction well.
+
+Action recognition from the body skeleton information has been actively studied due to the advance of motion capture systems such as Kinect. Typically the skeleton information is given in the form of 3d locations of a set of body joints. Many action recognition systems directly use these information as the input or convert the location information into a set of joint angles and then use them as the input. The focus of most of the previous research has been on the recognition part. 
+
+\cite{Vemulapalli2013} proposed a new skeleton representation based on relative geometry across body parts and achieve the state of the art results on several standard single-person action recognition datasets. They compute the translation and rotation between each pair of body parts and map it to the tangent space to obtain a feature vector. The benefit of their approach compared to the previously adopted skeleton representation is that their representation can directly capture the relationship between body parts that are not directly connected each other. Thus, it is more capable of recognizing actions in which the relationship between non-connected body parts, such as left arm and right arm, is more important.
+
+In this work, we extend \cite{Vemulapalli2013} to classify actions performed by two people. In our skeleton representation, in addition to the relative geometry across body parts within one person, we also consider relative geometry between body parts across two people. We believe that this representation enables us to capture two people's interaction well. For instance, our representation can captures the geometric relationship between a left arm of a person A and a right arm of a person B, which might be helpful to recognize the 'shaking hands' actions.
+
+For the recognition part, we develop an algorithm to automatically detect frames where actions are taking place. For each sequence, we computer the proposed skeleton features at each frame in the detected periods of the frames. Then we sample a fixed number of features with the constant interval by a simple interpolation method. This way we obtain the same number of features from each detected period. We concatenate these features and use it as an input to multiclass classifiers.
+
+The paper is organized as follows. In section 2, we show some related work. Section 3 explains our action localization method. Then we describe, in section 4, the proposed skeleton representation at each frame. Section 5 presents the interpolation method to obtain a final feature vector as well as the classification methods we propose. The experimental results are shown in section 6, followed by the conclusion in section 7.
 
 
 \section{Related Work}
 
 \section{Action Localization}
+The action sequences that are collected from the Kinect consists of several irrelevant frames which does not contain the action that we are looking for. Thus, given a video sequence it becomes important to approximately localize the action. This is a mandatory pre-processing step to extract realiable features that completely describe the action that  we are interested in. We alos assume throughout this work that there is only one continuous action that takes place throughout a given video sequence. In this section, we decribe a heuristic way to localize the action in a given video. A given video sequence consists of the following parts:
+\begin{equation}
+<Init. Action - Main Action - Finish>
+\end{equation}
+The heuristic described here tries to acquire the frames corresponding to the Main Action  in an automated way. We perform the localization in two steps:
+\begin{itemize}
+\item Computing the action center frames
+\item Computing the start and end frames
+\end{itemize}
+
+The action center frame is computed as the frame where the distance between the interacting persons is the least. If there are multiple frames with the same distance value (this could occur since some interactions can last for a few frames), the action center frame is assigned as the minimum of those frames.
+
+The start(end) of any interaction in the video could be implied by a constant decrease(increase) in distance between two persons. Thus, we compute the distance between the persons at each frame and identify when the rate of change of distance goes above(start) or below (end) a given threshold $\delta$, which is a user input parameter. 
 
 
+As can be observed, this method does not yield us exact localization but an approximate one. In the subsequent section, we take care of this by imposing temporal smoothness on the features that we extract from each frame. 
 \section{Skeleton Representation}
-
-
-
-
-
-%\subsection{Special Euclidean Group and Quaternions}
-%In this section, we briefly discuss the Special Euclidean Group $SE(3)$. The special Euclidean Group, $SE(3)$, is the Lie group of all 4 by 4 matrices of the form
-%\begin{equation}
-%P(R,\vec{d}) = \begin{bmatrix}
-%       R & \vec{d} \\
-%       0 & 1 \\
-%     \end{bmatrix}
-%\end{equation}
-%where $\vec{d} \in \mathcal{R}^{3}$ and $R$ is a rotation matrix, i.e., $R \in SO(3)$. The special Euclidean group represents the set of all rigid body motions in 3D space. $R$ represents a rotation and $\vec{d}$ represents a translation. For any points $z1 and z2 \in \mathcal{R}^{3}$, mapping is done by
-%\begin{equation}
-%\begin{bmatrix}
-%       R & \vec{d} \\
-%       0 & 1 \\
-%\end{bmatrix}
-%\begin{bmatrix}
-%       z \\
-%       1 \\
-%\end{bmatrix} = 
-%\begin{bmatrix}
-%       Rz + \vec{d} \\
-%       1 \\
-%\end{bmatrix}
-%\end{equation}.
-%
-%Each rotation matrix $R$ can be represented by 3 free parameters $\phi, \theta, \psi$. However, it is popular to represent $R$ as quaternions $\hat{q}=[q_1 q_2 q_3 q_4]^{T}$. One of the advantage of quaternions is that it can avoid the problem known as gimbal lock.
-
 
 
 The output from the Kinect sensor is 3d positions of 20 body joints for each person defined in the global coordinate. We define our skeleton representation for the first person as $S^{(1)}=(V^{(1)},E^{(1)})$, where $V^{(1)}=\{v_{1}^{(1)},v_{2}^{(1)},\dots,v_{N}^{(1)}\}, N=20$ denotes the set of joints and $E^{(1)}=\{e_{1}^{(1)},e_{2}^{(1)},\dots,e_{M}^{(1)}\}, M=19$ denotes the set of body parts ( See Fig.\ref{fig:skeleton}). Let $e_{m1}^{(1)},e_{m2}^{(1)} \in \mathcal{R}^3$ represents the starting and ending points of the body part $e_{m}^{(1)}$. Similarly we have $S^{(2)}=(V^{(2)},E^{(2)})$ for the second person.
@@ -116,7 +109,7 @@ First, we define the person specific local coordinate at the first person's shou
 
 Next we consider a set of body parts, $E=\{E^{(1)},E^{(2)}\}$, and for each pair of body parts $e_m$ and $e_n$, in $E$, we describe their relative geometry by the translation and rotation. The translation is computed as $T_{m,n}=e_{m1}-e_{n1}$. For the rotation, we compute the rotation axis $r$ and the rotation angle $\theta$ between two vectors $e_{n2}-e_{n1}$ and $e_{m2}-e_{m1}$. From them we compute a quaternion $q_{m,n} \in \mathcal{R}^4$ by $q_1=r_1 sin( \frac{\theta}{2} ), q_2=r_2 sin( \frac{\theta}{2} ), q_3=r_3 sin( \frac{\theta}{2}), q_4=cin( \frac{\theta}{2})$.
 
-Thus, each pair of parts can be represented as 7 dimensional vector. Since there are $\binom{38}{2}$ such pairs, we have $\binom{38}{2} \times 7 = 4921$ dimensional vector. We do the same step by using the second person's local coordinate and concatenate two vectors to obtain the final feature vector representing two people configurations at current frame.
+Thus, each pair of parts can be represented as 7 dimensional vector. Since there are $\binom{38}{2}$ such pairs, we have $\binom{38}{2} \times 7 = 4921$ dimensional vector. We do the same step by using the second person's local coordinate and concatenate two vectors to obtain the final feature vector representing two people configurations at a current frame.
 
 \begin{figure}[htb]
 \begin{center}
@@ -127,7 +120,7 @@ Thus, each pair of parts can be represented as 7 dimensional vector. Since there
 
 We compute our skeleton feature across 41 frames which includes the action center frame, 20 frames before the action center frame and 20 frames after the action center frame. Finally we concatenate all the feature vectors into a final vector.
 
-\section{Classification Methods}
+\section{Action Classification}
 We propose two different methods for classifying interactive actions from the skeleton features.
 
 \subsection{Generative Modeling}
@@ -149,7 +142,7 @@ It should be noted that for some actions that \textit{Agent} and \textit{Target}
 \begin{figure}[ht]
 \centering
 
-  \includegraphics[scale = 0.4]{action_des.png}%
+  \includegraphics[scale = 0.3]{action_des.png}%
   \label{Fig:act_des}%
 
 \end{figure}
@@ -159,13 +152,13 @@ Thus, we can see that actions that have similar semantic descriptions in terms o
 \begin{figure}[ht]
 \centering
 
-  \includegraphics[scale = 0.4]{dec_tree.png}%
+  \includegraphics[scale = 0.3]{dec_tree.png}%
   \label{Fig:tree}%
 
 \end{figure}
 
-\subsection{Artificial Feed forward Neural Network}
-We use artificial feed forward neural network with softmax activation function as its final layer to estimate conditional probability, $P(y_t|x_t,t=t_{ac})$ at time instance $t$, where $y_t$ is an action class label and $x_t$ is the skeleton features computed from $t-20$ to $t+20$ frames and $t_{ac}$ is the time instance of the action center frame. We manually localize the action center frame of the training sequences and train the model with 10 hidden layers.
+\subsection{Artificial Feed-forward Neural Network}
+We use artificial feed-forward neural network with softmax activation function as its final layer to estimate conditional probability, $P(y_t|x_t,t=t_{ac})$ at time instance $t$, where $y_t$ is an action class label and $x_t$ is the skeleton features computed from $t-20$ to $t+20$ frames and $t_{ac}$ is the time instance of the action center frame. We manually localize the action center frame of the training sequences and train the model with 10 hidden layers.
 
 In testing time, we apply the trained neural network in a time sliding window manner and obtain the conditional probability $P(y_t|x_t,t=t_{ac})$. We also apply our action center detector at each frame to obtain $P(t=t_{ac}|x_t)$. We then compute $P(y_t,t=t_{ac}|x_t)=P(y_t|x_t,t=t_{ac}) P(t=t_{ac}|x_t)$ at each frame. Finally, we compute $P(y)$ for each sequence by $\sum_{t=t_{s}}^{t_{e}} P(y_t,t=t_{ac}|x_t)$ where $t_{s}$ and $t_{e}$ are the time instance where there are sufficient number of frames to apply the neural network. The final prediction is done by $\argmax_{y} P(y)$.
 
@@ -173,80 +166,35 @@ In testing time, we apply the trained neural network in a time sliding window ma
 
 \subsection{Data Collection}
 
-The dataset that we have is an augmented version of the already available interaction dataset which consists of 8 actions :
-
-%\begin{figure}[ht]
-%\centering
-%\subfloat[Kinect Skeleton model]
-%{
-%  \includegraphics[scale = 0.2]{kinect_joints.png}%
-%  \label{Fig:1}%
-%}
-%\quad
-%\subfloat[Available Interaction dataset]
-%{
-%  \includegraphics[scale = 0.3]{dataset.png}%
-%  \label{Fig:2}%
-%}
-%\end{figure}
-
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[width=3.4in]{dataset.png}
-\caption{Available Interaction dataset \label{fig:Fig:2}}
-\end{center}
-\end{figure}
-
-
-In addition to the available dataset, we create a new dataset of 10 different interactive actions using Kinect. The action classes we consider are summarized in Fig.\ref{fig:newactions}. For each pair of people, we collect 2 sequences per action class by switching people's locations. There are 12 sequences per action class.
+We create a new dataset named Maryland Interactive Action Dataset (MIAD) which consists of 10 interactive action classes captured by Kinect. The action classes we consider are summarized in Fig.\ref{fig:newactions} with their representative images. For each pair of people, we collect 2 sequences per an action class by switching their locations. Since we collect data from 6 pairs of people, there are 12 sequences per action class. We use the first X sequences as training data and the remaining sequences as testing data.
 
 \begin{figure*}[htb]
 \begin{center}
 \includegraphics[width=6.8in]{newactions.pdf}
-\caption{Actions in newly collected dataset \label{fig:newactions}}
+\caption{Action classes in newly collected MIAD dataset.  \label{fig:newactions}}
 \end{center}
 \end{figure*}
 
+Our new data, MIAD differs from the existing two people interactive dataset such as K3HI \cite{K3HI} and SBU Kinect Interaction Dataset \cite{Yun2012}. First, our skeleton is represented by 20 joints whereas K3HI and SBU have only 15 joints. Second, the action classes we consider are more 'fine-grained'. In K3HI and SBU, there is only one action class for 'exchanging an object' class while MIAD contains 5 unique action classes for it, differentiated by the object being exchanged. Also K3HI and SBU have only one action class for the greeting action, namely, shaking hands, while MIAD includes 5 different action classes. These fine-grained actions are generally more challenging to discriminate as actions are more similar each other, necessitating more detailed representation of body movements.
 
-The data is organized in the following form : 
-\begin{itemize}
-\item : Depth data file corresponding to frame number xxx of activity.
-		
-\item rgb$dummy$xxx.png: RGB data file corresponding to frame number xxx of activity.
-				
-\item skeleton$dummy$pos.txt: Skeleton position data
+%Steps for performing Interaction Recognition using Kinect:
 
-\end{itemize}
-	
-Skeleton data consists of 15 joints per person. Each row follows the following format.
-\begin{equation*}
-%\{Frame# ,PA(1),..,PA(15),PB(1),..,PB(15)\}
-\end{equation*}	
+%Step 0 : To organize the data in the above format. To do this, we extract skeleton data from the recorded OpenNI files that comes from the Kinect sensor.
 
-where, \\
-$PA(i)$ $\implies$ position of ith joint (x,y,z) for the subject A located at left \\
-$PB(i)$ $\implies$ position of ith joint (x,y,z) for the subject B located at right \\
-x,y and z are normalized as [0,1].	
-\newline	
+%Step 1 : For each frame, we have to spatially localize each person - We are trying to figure out how to extract this information directly from the Kinect output
 
+%Step 2 : Should perform an Object Detection routine to verify if there is any sign of Object exchange
 
-
-Steps for performing Interaction Recognition using Kinect:
-
-Step 0 : To organize the data in the above format. To do this, we extract skeleton data from the recorded OpenNI files that comes from the Kinect sensor.
-
-Step 1 : For each frame, we have to spatially localize each person - We are trying to figure out how to extract this information directly from the Kinect output
-
-Step 2 : Should perform an Object Detection routine to verify if there is any sign of Object exchange
-
-Step 3 : Based on how each joint moves in the video per frame, the activity trees are grown and the corresponding activity is detected. Primarily we want to differentiate between Object/Non-object Interactions and further classify the Non-Object Interactions into one of the Action classes that were given to us during Training. 
+%Step 3 : Based on how each joint moves in the video per frame, the activity trees are grown and the corresponding activity is detected. Primarily we want to differentiate between Object/Non-object Interactions and further classify the Non-Object Interactions into one of the Action classes that were given to us during Training. 
 
 %The skeleton representation provides a convenient way to represent different actions in the form of Action trees. The terminal nodes of each action tree consists of the 20 joint positions. For each action, based on how different joint nodes combine to perform that action we can develop the corresponding action tree. 
 
-\subsection{Results}
+\subsection{Action Localization Results}
+Show the examples of the starting frame, center frame and the ending frame.
 
-
-
+\subsection{Action Classification Results}
+Show confusion matrix.
+Give some discussion on difficult action classes.
 
 \section{Conclusion}
 
@@ -262,6 +210,19 @@ Step 3 : Based on how each joint moves in the video per frame, the activity tree
   2014.
 
 \bibitem{SUHA} Semantic-level Understanding of Human Actions and Interactions using Event Hierarchy, Sangho Park, J.K. Aggarwal, CVPR'04
+
+\bibitem{K3HI}
+	Sangho Park,
+	J.K. Aggarwal,
+	\emph{K3HI: Kinect-based 3D Human Interaction Dataset}
+
+\bibitem{Yun2012}
+	Kiwon Yun, Jean Honorio, Debaleena Chattopadhyay, Tamara L. Berg, and Dimitris Samaras,
+	\emph{Two-person Interaction Detection Using Body-Pose Features and Multiple Instance Learning}.
+	CVPRW,
+	2012.
+	
+
 
 \end{thebibliography}
 
