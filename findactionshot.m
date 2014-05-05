@@ -27,8 +27,9 @@ thres = 0.05;
  
  %shotNum = getshotNum(dist,actionCenter,wsize);
  %playAction(path_to_video,shotNum);
-end
-Fstart = min(shotNum);
+ Fstart = min(shotNum);
 Fend = max(shotNum);
+
+end
 % function shotNum = getshotNum(dist,actionCenter,wsize);
 % end
