@@ -1,9 +1,10 @@
-function findactionshot(path_to_video)
+function [Fstart,Fend] = findactionshot(path_to_video)
 %Usage examples
 %findactionshot('003_card/2014_4_2_13_38_27')
 %findactionshot('004_ball/2014_4_2_13_40_27')
 %findactionshot('009_fistbump/2014_4_2_13_44_44')
-
+%
+% Returns start and end frame of the localized action
 
 wsize = 50;
 thres = 0.05;
@@ -25,8 +26,9 @@ thres = 0.05;
  shotNum = (max(1,actionCenter - idbefore) : min(actionCenter + idafter + round(0.25*wsize),length(dist)));
  
  %shotNum = getshotNum(dist,actionCenter,wsize);
- playAction(path_to_video,shotNum);
+ %playAction(path_to_video,shotNum);
 end
-
+Fstart = min(shotNum);
+Fend = max(shotNum);
 % function shotNum = getshotNum(dist,actionCenter,wsize);
 % end
