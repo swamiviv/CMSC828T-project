@@ -9,11 +9,13 @@ function [Fstart,Fend] = findactionshot(path_to_video)
 wsize = 50;
 thres = 0.05;
  [dist,frames] =  plotDist(path_to_video);
- 
+
 [val,idx] = sort(dist,'ascend');
  actionCenter = idx(min(find(val > 0)));
  %before the action
- percChange = abs(diff(dist(actionCenter-wsize:actionCenter)))./dist(actionCenter-wsize:actionCenter-1);
+ startFrame = max(frames(1),actionCenter-wsize);
+ endFrame = startFrame + wsize;
+ percChange = abs(diff(dist(startFrame:endFrame)))./dist(startFrame:endFrame-1);
  percChange(isnan(percChange)) = 1e+6;
  idbefore = max(find(percChange > 2*thres));
  if(isempty(idbefore))
@@ -24,7 +26,7 @@ thres = 0.05;
  %after the action
  startFrame = actionCenter;
  endFrame = min(actionCenter + wsize,length(dist));
- percChange = diff(dist(startFrame:endFrame))./dist(startFrame:endFrame-1);
+ percChange = abs(diff(dist(startFrame:endFrame)))./dist(startFrame:endFrame-1);
   percChange(isnan(percChange)) = 1e+6;
  idafter = min(find(percChange > thres));
  if(isempty(idafter))
