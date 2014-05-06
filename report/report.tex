@@ -43,7 +43,7 @@
 
 \author{Swami Sankaranarayanan, Kota Hara, Yiannis Aloimonos\\
 Center for Automation Research, University of Maryland, College Park, MD 20742\\
-{\tt\small \{swamiviv,kotahara\}@umiacs.umd.edu}
+{\tt\small \{swamiviv,kotahara\}@umiacs.umd.edu yiannis@cs.umd.edu}
 % For a paper whose authors are all at the same institution,
 % omit the following lines up until the closing ``}''.
 % Additional authors and addresses can be added with ``\and'',
@@ -109,7 +109,7 @@ First, we define the person specific local coordinate at the first person's shou
 
 Next we consider a set of body parts, $E=\{E^{(1)},E^{(2)}\}$, and for each pair of body parts $e_m$ and $e_n$, in $E$, we describe their relative geometry by the translation and rotation. The translation is computed as $T_{m,n}=e_{m1}-e_{n1}$. For the rotation, we compute the rotation axis $r$ and the rotation angle $\theta$ between two vectors $e_{n2}-e_{n1}$ and $e_{m2}-e_{m1}$. From them we compute a quaternion $q_{m,n} \in \mathcal{R}^4$ by $q_1=r_1 sin( \frac{\theta}{2} ), q_2=r_2 sin( \frac{\theta}{2} ), q_3=r_3 sin( \frac{\theta}{2}), q_4=cin( \frac{\theta}{2})$.
 
-Thus, each pair of parts can be represented as 7 dimensional vector. Since there are $\binom{38}{2}$ such pairs, we have $\binom{38}{2} \times 7 = 4921$ dimensional vector. We do the same step by using the second person's local coordinate and concatenate two vectors to obtain the final feature vector representing two people configurations at a current frame.
+Thus, each pair of parts can be represented as 7 dimensional vector. Since there are $\binom{38}{2}$ such pairs, we have $\binom{38}{2} \times 7 = 4921$ dimensional vector. We do the same step by using the second person's local coordinate and concatenate two vectors to obtain the final 9842-d feature vector representing two people configurations at a current frame.
 
 \begin{figure}[htb]
 \begin{center}
@@ -118,7 +118,7 @@ Thus, each pair of parts can be represented as 7 dimensional vector. Since there
 \end{center}
 \end{figure}
 
-We compute our skeleton feature across 41 frames which includes the action center frame, 20 frames before the action center frame and 20 frames after the action center frame. Finally we concatenate all the feature vectors into a final vector.
+To extract features from one action sequence, we first compute our skeleton feature across frames detected by the action localization algorithm. Since the length of the detected action frames is different across sequences, we apply temporal interpolation to sample skeleton features at 30 uniformly distributed time instance. We then apply PCA to reduce the dimensionality to 1000. Finally, we concatenate all the vectors into 30000-d feature vector.
 
 \section{Action Classification}
 We propose two different methods for classifying interactive actions from the skeleton features.
