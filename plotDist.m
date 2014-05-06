@@ -1,4 +1,4 @@
-function dist = plotDist(dirName)
+function [dist,frames] = plotDist(dirName)
 
 if(exist(strcat(dirName,'/depthMetaData.mat')) > 0)
     data=load(strcat(dirName,'/depthMetaData.mat'));
@@ -7,7 +7,8 @@ else
 end
 fname = fieldnames(data);
 depthMetaData = getfield(data,fname{1});
-numFrames = length([depthMetaData.FrameNumber]);
+frames = [depthMetaData.FrameNumber];
+numFrames = length(frames);
 %depthMetaDataClean = struct(depthMetaData);
 numPeople = 2;
 dist = [];

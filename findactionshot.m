@@ -8,7 +8,7 @@ function [Fstart,Fend] = findactionshot(path_to_video)
 
 wsize = 50;
 thres = 0.05;
- dist =  plotDist(path_to_video);
+ [dist,frames] =  plotDist(path_to_video);
  
 [val,idx] = sort(dist,'ascend');
  actionCenter = idx(min(find(val > 0)));
@@ -36,8 +36,8 @@ thres = 0.05;
  
  %shotNum = getshotNum(dist,actionCenter,wsize);
  %playAction(path_to_video,shotNum);
- Fstart = min(shotNum);
-Fend = max(shotNum);
+ Fstart = frames(min(shotNum));
+Fend = frames(max(shotNum));
 
 end
 % function shotNum = getshotNum(dist,actionCenter,wsize);
