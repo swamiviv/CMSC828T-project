@@ -39,7 +39,7 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Interactive Action Recognition using Relative Geometry Between Body Parts Across Multiple People}
+\title{Interactive Action Recognition from 3D Skeleton Data}
 
 \author{Swami Sankaranarayanan, Kota Hara, Yiannis Aloimonos\\
 Center for Automation Research, University of Maryland, College Park, MD 20742\\
@@ -76,14 +76,15 @@ Action recognition from the body skeleton information has been actively studied 
 
 In this work, we extend \cite{Vemulapalli2013} to classify actions performed by two people. In our skeleton representation, in addition to the relative geometry across body parts within one person, we also consider relative geometry between body parts across two people. We believe that this representation enables us to capture two people's interaction well. For instance, our representation can captures the geometric relationship between a left arm of a person A and a right arm of a person B, which might be helpful to recognize the 'shaking hands' actions.
 
-For the recognition part, we develop an algorithm to automatically detect frames where actions are taking place. For each sequence, we computer the proposed skeleton features at each frame in the detected periods of the frames. Then we sample a fixed number of features with the constant interval by a simple interpolation method. This way we obtain the same number of features from each detected period. We concatenate these features and use it as an input to multiclass classifiers.
+For the recognition part, we develop an algorithm which not only predicts the action class but also localizes frames where actions are taking place. This is done by using Latent Structured SVM framework. Specifically, we treat the staring and ending frames of the action as latent variables and jointly optimize the cost function in a max-margin manner. Note that this method does not require annotation for latent variables as they are automatically determined in the optimization process.
+
 
 The paper is organized as follows. In section 2, we show some related work. Section 3 explains our action localization method. Then we describe, in section 4, the proposed skeleton representation at each frame. Section 5 presents the interpolation method to obtain a final feature vector as well as the classification methods we propose. The experimental results are shown in section 6, followed by the conclusion in section 7.
 
 
 \section{Related Work}
 
-\section{Action Localization}
+\section{Heuristic Approach for Action Localization}\label{sec:actionlocalization}
 The action sequences that are collected from the Kinect consists of several irrelevant frames which does not contain the action that we are looking for. Thus, given a video sequence it becomes important to approximately localize the action. This is a mandatory pre-processing step to extract realiable features that completely describe the action that  we are interested in. We alos assume throughout this work that there is only one continuous action that takes place throughout a given video sequence. In this section, we decribe a heuristic way to localize the action in a given video. A given video sequence consists of the following parts:
 \begin{equation}
 <Init. Action - Main Action - Finish>
@@ -157,10 +158,90 @@ Thus, we can see that actions that have similar semantic descriptions in terms o
 
 \end{figure}
 
-\subsection{Artificial Feed-forward Neural Network}
-We use artificial feed-forward neural network with softmax activation function as its final layer to estimate conditional probability, $P(y_t|x_t,t=t_{ac})$ at time instance $t$, where $y_t$ is an action class label and $x_t$ is the skeleton features computed from $t-20$ to $t+20$ frames and $t_{ac}$ is the time instance of the action center frame. We manually localize the action center frame of the training sequences and train the model with 10 hidden layers.
+%\subsection{Artificial Feed-forward Neural Network}
 
-In testing time, we apply the trained neural network in a time sliding window manner and obtain the conditional probability $P(y_t|x_t,t=t_{ac})$. We also apply our action center detector at each frame to obtain $P(t=t_{ac}|x_t)$. We then compute $P(y_t,t=t_{ac}|x_t)=P(y_t|x_t,t=t_{ac}) P(t=t_{ac}|x_t)$ at each frame. Finally, we compute $P(y)$ for each sequence by $\sum_{t=t_{s}}^{t_{e}} P(y_t,t=t_{ac}|x_t)$ where $t_{s}$ and $t_{e}$ are the time instance where there are sufficient number of frames to apply the neural network. The final prediction is done by $\argmax_{y} P(y)$.
+%We use artificial feed-forward neural network with softmax activation function as its final layer to estimate conditional probability, $P(y_t|x_t,t=t_{ac})$ at time instance $t$, where $y_t$ is an action class label and $x_t$ is the skeleton features computed from $t-20$ to $t+20$ frames and $t_{ac}$ is the time instance of the action center frame. We manually localize the action center frame of the training sequences and train the model with 10 hidden layers.
+
+%In testing time, we apply the trained neural network in a time sliding window manner and obtain the conditional probability $P(y_t|x_t,t=t_{ac})$. We also apply our action center detector at each frame to obtain $P(t=t_{ac}|x_t)$. We then compute $P(y_t,t=t_{ac}|x_t)=P(y_t|x_t,t=t_{ac}) P(t=t_{ac}|x_t)$ at each frame. Finally, we compute $P(y)$ for each sequence by $\sum_{t=t_{s}}^{t_{e}} P(y_t,t=t_{ac}|x_t)$ where $t_{s}$ and $t_{e}$ are the time instance where there are sufficient number of frames to apply the neural network. The final prediction is done by $\argmax_{y} P(y)$.
+
+\section{Joint Action Localization and Classification}
+In Sec.\ref{sec:actionlocalization}, we propose a heuristic approach for action localization where the aim is to automatically determine when the action starts and ends. The problem of this approach is that it is not designed to achieve better classification accuracy. Also it is purely subjective to define the start and the end of the action.
+
+Thus, we propose a method which can do both tasks simultaneously. In the proposed method, the training does not require manual labeling of the starting and ending frame of each action sequence. The model is trained in such a way that the starting and ending frame are determined in order to maximize the discriminativeness of the model. 
+
+Our method is based on a latent structured SVM framework \cite{LatentSVM}. In this framework, we are given a set of training data
+\begin{align*}
+\mathcal{S}=\{(x_1,y_1),\dots,(x_N,y_N)\} \in (\mathcal{X},\mathcal{Y})^N
+\end{align*},
+where in our case, $x$ is skeleton feature extracted from a whole sequence and $y$ is an action class label.
+Let $h$ denote a latent variable, which specifies the starting and ending frame of the sequence.
+
+The prediction is done by finding $h$ and $y$ which maximize the following scoring function:
+\begin{align}\label{eq:prediction}
+f_{\mathbf{w}}(x) = \argmax_{(y,h) \in \mathcal{Y} \times \mathcal{H}} [ \mathbf{w} \cdot \Phi(x,y,h)]
+\end{align}
+where $\Phi(x,y,h)$ is a joint feature map. As a result, we not only obtain the predicted action class but also the starting and ending frame of the action in the given sequence.
+
+In this work, we define the joint feature map $\Phi(x,y,h)$ as follows.
+\begin{itemize}
+
+  \item (Step 1) Extract part of $x$ between starting frame and ending frame (denoted as $\hat{x}$) 
+  \item (Step 2) Expanding/Shrinking $\hat{x}$ by temporal resampling so that the dimensionality becomes a predefined number (denoted as $x^{*}$)
+    \item  (Step 3) Setting $y$-th section of $\Phi$ as $x^{*}$ and remaining part as 0
+\end{itemize}
+\begin{equation}\label{M}
+\Phi =
+\begin{pmatrix}
+  0  \\
+  0  \\
+  \vdots \\
+  x^* \\
+  \vdots \\
+    0   \\
+\end{pmatrix}
+\in R^{ |\mathcal{Y}| \times dim(x^*)}
+\end{equation}
+The last step is a common approach taken for multiclass classification problems. This way, for each action class, different part of $\mathbf{w}$ is used and the class which has the highest score is chosen by Eq.\ref{eq:prediction}.
+
+The training is done by solving the following optimization problem:
+\begin{equation}\label{eq:optimization}
+\begin{aligned}
+\min_{\mathbf{w}} ||\mathbf{w} ||^2 + C \sum_{i=1}^{N} [ \max_{ (\tilde{y},\tilde{h}) \in (\mathcal{Y},\mathcal{H}) } [ \Delta(y_i, \tilde{y}) + \mathbf{w} \cdot \Phi(x_i, \tilde{y}, \tilde{h} )] - \\
+\max_{h \in \mathcal{H}}  \mathbf{w} \cdot \Phi(x_i,y_i, h)]
+\end{aligned}
+\end{equation}
+where $\Delta(y_i,y_j)$  is a loss function. We define the loss as
+\[
+  \Delta(y_i,y_j) = \begin{cases}
+    0 & (y_i = y_j ) \\
+    1 & (otherwise)
+  \end{cases}
+\]
+
+By rewriting Eq.\ref{eq:optimization},
+\begin{align*}\label{eq:optimization}
+\min_{\mathbf{w}} ||\mathbf{w} ||^2 + C \sum_{i=1}^{N} [ \max_{ (\tilde{y},\tilde{h}) \in (\mathcal{Y},\mathcal{H}) } [ \Delta(y_i, \tilde{y}) + \mathbf{w} \cdot \Phi(x_i, \tilde{y}, \tilde{h} )]] - \\
+C \sum_{i=1}^{N} [ \max_{h \in \mathcal{H}}  \mathbf{w} \cdot \Phi(x_i,y_i, h)]
+\end{align*}
+it is clear that the objective function is non-convex as it is defined as the difference between two convex function. We thus find a local optimum by EM-like algorithm where we first find, for each training sample, $h$ which maximize $\mathbf{w} \cdot \Phi(x_i,y_i, h)$. In our setting, this corresponds to finding the starting and ending frame for a training sample which make the score as high as possible.
+
+In the second step, we fix $h$ and minimize $||\mathbf{w} ||^2 + C \sum_{i=1}^{N} [ \max_{ (\tilde{y},\tilde{h}) \in (\mathcal{Y},\mathcal{H}) } [ \Delta(y_i, \tilde{y}) + \mathbf{w} \cdot \Phi(x_i, \tilde{y}, \tilde{h} )]]$, which is convex. The maximization in the objective function corresponds to finding the most strict constrain for the optimization problem. To put it simply, we find a class $(\tilde{y}$ and $h$ where $(\tilde{y}$ is different from the true class but the score is high. 
+
+The training is done by iteratively executing the above two steps while the decrease of the objective value becomes marginal.
+
+Though we can use random values for the initial values for $h$, it is often desired to give a better initial values for $h$. We use the results of the heuristic approach described in Sec.\ref{sec:actionlocalization} as our initial values for $h$.
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Experiments}
 
@@ -222,6 +303,9 @@ Give some discussion on difficult action classes.
 	CVPRW,
 	2012.
 	
+
+\bibitem{LatentSVM} Learning structural SVMs with latent variables, Chun-Nam John Yu and Thorsten Joachims, ICML'09.
+
 
 
 \end{thebibliography}
