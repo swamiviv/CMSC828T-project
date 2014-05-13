@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.2.10)  13 MAY 2014 10:36
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.2.10)  13 MAY 2014 10:47
 entering extended mode
  %&-line parsing enabled.
 **report.tex
@@ -509,13 +509,17 @@ Overfull \hbox (9.57245pt too wide) in paragraph at lines 313--325
 <conf_svm_ovr.png, id=99, 1489.565pt x 900.163pt>
 File: conf_svm_ovr.png Graphic file (type png)
  <use conf_svm_ovr.png>
-Overfull \hbox (30.97418pt too wide) in paragraph at lines 328--329
+Overfull \hbox (1.19933pt too wide) in paragraph at lines 328--329
 [][] 
  []
 
-<svm_ovr_lc.png, id=100, 1489.565pt x 900.163pt>
+<svm_ovr_lc.png, id=100, 1489.565pt x 570.933pt>
 File: svm_ovr_lc.png Graphic file (type png)
  <use svm_ovr_lc.png>
+Overfull \hbox (30.97418pt too wide) in paragraph at lines 335--336
+ [][] 
+ []
+
 <sh_conf.png, id=104, 575.14874pt x 238.8925pt>
 File: sh_conf.png Graphic file (type png)
  <use sh_conf.png> [5 <./newactions.pdf> <./conf_svm_ovr.png (PNG copy)> <./svm
@@ -552,7 +556,7 @@ share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-
 texlive/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-texlive/fonts/type
 1/urw/times/utmb8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.p
 fb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (6 pages, 1760092 bytes).
+Output written on report.pdf (6 pages, 1760564 bytes).
 PDF statistics:
  246 PDF objects out of 1000 (max. 8388607)
  37 named destinations out of 1000 (max. 500000)
