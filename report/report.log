@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.2.10)  13 MAY 2014 10:47
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.2.10)  13 MAY 2014 11:37
 entering extended mode
  %&-line parsing enabled.
 **report.tex
@@ -453,6 +453,9 @@ LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <9> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 57.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 59.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
@@ -465,9 +468,12 @@ File: omsptm.fd
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 93.
 
-<skeleton.pdf, id=22, 201.285pt x 273.13943pt>
+<skeleton.pdf, id=19, 201.285pt x 273.13943pt>
 File: skeleton.pdf Graphic file (type pdf)
- <use skeleton.pdf> [2 <./skeleton.pdf>]
+ <use skeleton.pdf>
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [2 <./skeleton.pdf>]
 Overfull \hbox (9.56332pt too wide) detected at line 217
 [][] []
  []
@@ -522,13 +528,12 @@ Overfull \hbox (30.97418pt too wide) in paragraph at lines 335--336
 
 <sh_conf.png, id=104, 575.14874pt x 238.8925pt>
 File: sh_conf.png Graphic file (type png)
- <use sh_conf.png> [5 <./newactions.pdf> <./conf_svm_ovr.png (PNG copy)> <./svm
-_ovr_lc.png (PNG copy)>]
-(./report.brf)
+ <use sh_conf.png> [5 <./newactions.pdf> <./conf_svm_ovr.png (PNG copy)>] (./re
+port.brf)
 \tf@brf=\write3
 \openout3 = `report.brf'.
 
- [6 <./sh_conf.png (PNG copy)>] (./report.aux)
+ [6 <./svm_ovr_lc.png (PNG copy)> <./sh_conf.png (PNG copy)>] (./report.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -556,9 +561,9 @@ share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-
 texlive/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-texlive/fonts/type
 1/urw/times/utmb8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.p
 fb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (6 pages, 1760564 bytes).
+Output written on report.pdf (6 pages, 1762758 bytes).
 PDF statistics:
- 246 PDF objects out of 1000 (max. 8388607)
+ 247 PDF objects out of 1000 (max. 8388607)
  37 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
