@@ -43,7 +43,7 @@
 
 \author{Swami Sankaranarayanan, Kota Hara, Yiannis Aloimonos\\
 Center for Automation Research, University of Maryland, College Park, MD 20742\\
-{\tt\small \{swamiviv,kotahara\}@umiacs.umd.edu yiannis@cs.umd.edu}
+{\tt\small \{swamiviv,kotahara\}@umiacs.umd.edu}
 % For a paper whose authors are all at the same institution,
 % omit the following lines up until the closing ``}''.
 % Additional authors and addresses can be added with ``\and'',
@@ -85,6 +85,7 @@ The paper is organized as follows. In section 2, we show some related work. Sect
 \section{Related Work}
 
 \section{Heuristic Approach for Action Localization}\label{sec:actionlocalization}
+
 The action sequences that are collected from the Kinect consists of several irrelevant frames which does not contain the action that we are looking for. Thus, given a video sequence it becomes important to approximately localize the action. This is a mandatory pre-processing step to extract realiable features that completely describe the action that  we are interested in. We alos assume throughout this work that there is only one continuous action that takes place throughout a given video sequence. In this section, we decribe a heuristic way to localize the action in a given video. A given video sequence consists of the following parts:
 \begin{equation}
 <Init. Action - Main Action - Finish>
@@ -101,7 +102,9 @@ The start(end) of any interaction in the video could be implied by a constant de
 
 
 As can be observed, this method does not yield us exact localization but an approximate one. In the subsequent section, we take care of this by imposing temporal smoothness on the features that we extract from each frame. 
-\section{Skeleton Representation}
+
+
+\section{Skeleton Representation}\label{sec:Feat}
 
 
 The output from the Kinect sensor is 3d positions of 20 body joints for each person defined in the global coordinate. We define our skeleton representation for the first person as $S^{(1)}=(V^{(1)},E^{(1)})$, where $V^{(1)}=\{v_{1}^{(1)},v_{2}^{(1)},\dots,v_{N}^{(1)}\}, N=20$ denotes the set of joints and $E^{(1)}=\{e_{1}^{(1)},e_{2}^{(1)},\dots,e_{M}^{(1)}\}, M=19$ denotes the set of body parts ( See Fig.\ref{fig:skeleton}). Let $e_{m1}^{(1)},e_{m2}^{(1)} \in \mathcal{R}^3$ represents the starting and ending points of the body part $e_{m}^{(1)}$. Similarly we have $S^{(2)}=(V^{(2)},E^{(2)})$ for the second person.
@@ -110,7 +113,7 @@ First, we define the person specific local coordinate at the first person's shou
 
 Next we consider a set of body parts, $E=\{E^{(1)},E^{(2)}\}$, and for each pair of body parts $e_m$ and $e_n$, in $E$, we describe their relative geometry by the translation and rotation. The translation is computed as $T_{m,n}=e_{m1}-e_{n1}$. For the rotation, we compute the rotation axis $r$ and the rotation angle $\theta$ between two vectors $e_{n2}-e_{n1}$ and $e_{m2}-e_{m1}$. From them we compute a quaternion $q_{m,n} \in \mathcal{R}^4$ by $q_1=r_1 sin( \frac{\theta}{2} ), q_2=r_2 sin( \frac{\theta}{2} ), q_3=r_3 sin( \frac{\theta}{2}), q_4=cin( \frac{\theta}{2})$.
 
-Thus, each pair of parts can be represented as 7 dimensional vector. Since there are $\binom{38}{2}$ such pairs, we have $\binom{38}{2} \times 7 = 4921$ dimensional vector. We do the same step by using the second person's local coordinate and concatenate two vectors to obtain the final 9842-d feature vector representing two people configurations at a current frame.
+Thus, each pair of parts can be represented as 7 dimensional vector. Since there are $\binom{38}{2}$ such pairs, we have $\binom{38}{2} \times 7 = 4921$ dimensional vector. We do the same step by using the second person's local coordinate and concatenate two vectors to obtain the final feature vector representing two people configurations at a current frame.
 
 \begin{figure}[htb]
 \begin{center}
@@ -119,45 +122,50 @@ Thus, each pair of parts can be represented as 7 dimensional vector. Since there
 \end{center}
 \end{figure}
 
-To extract features from one action sequence, we first compute our skeleton feature across frames detected by the action localization algorithm. Since the length of the detected action frames is different across sequences, we apply temporal interpolation to sample skeleton features at 30 uniformly distributed time instance. We then apply PCA to reduce the dimensionality to 1000. Finally, we concatenate all the vectors into 30000-d feature vector.
+We compute our skeleton feature across 41 frames which includes the action center frame, 20 frames before the action center frame and 20 frames after the action center frame. Finally we concatenate all the feature vectors into a final vector.
 
-\section{Action Classification}
-We propose two different methods for classifying interactive actions from the skeleton features.
-
-\subsection{Generative Modeling}
-Given an input video containing the action, generate a semantic desription of the action as it occurs in the video. To describe an action would mean to generate a dictionary based representation for the action. A suitable middle ground between a complete linguistic action definition and a machine-derivable description, we borrow the action vocabulary decribed in \cite{SUHA}. Accordingly, a single person action in general can be described using an \textbf{operational triplet} as follows:
-
-\begin{equation}
-<Agent-Motion-Target>
-\end{equation}
-
-where $Agent$ is the person or the body part of the person which initiates the action; $Motion$ implies the movement of the $Agent$; $Target$ can be taken to be an object or another person or his body part that is involved in the interaction. Using this terminology some simple action representations can be generated as shown below:
-
-\begin{itemize}
-\item \textbf{Handshake}: $<$Arm1 - Outstretched - Arm2$>$
-\item \textbf{Kicking}: $<$Leg1 - Outstretched - Leg2$>$
-\end{itemize}
-
-It should be noted that for some actions that \textit{Agent} and \textit{Target} need not necessarily be a single person or body part but can be a collection of body parts that act on each other in a causal way. To see an example of this, consider the figure \ref{Fig:act_des}
-
-\begin{figure}[ht]
-\centering
-
-  \includegraphics[scale = 0.3]{action_des.png}%
-  \label{Fig:act_des}%
-
-\end{figure}
-
-Thus, we can see that actions that have similar semantic descriptions in terms of the operational triplet can be differentiated by means of proper temporal constraints. To look at how spatial constraints can decide the type of interaction, we incorporate that knowledge in the decision tree structure shown in figure \ref{Fig:tree}.
-
-\begin{figure}[ht]
-\centering
-
-  \includegraphics[scale = 0.3]{dec_tree.png}%
-  \label{Fig:tree}%
-
-\end{figure}
-
+%\section{Action Classification}
+%We propose two different methods for classifying interactive actions from the skeleton features.
+%
+%\subsection{Generative Modeling}
+%Given an input video containing the action, generate a semantic desription of the action as it occurs in the video. To describe an action would mean to generate a dictionary based representation for the action. A suitable middle ground between a complete linguistic action definition and a machine-derivable description, we borrow the action vocabulary decribed in \cite{SUHA}. Accordingly, a single person action in general can be described using an \textbf{operational triplet} as follows:
+%
+%\begin{equation}
+%<Agent-Motion-Target>
+%\end{equation}
+%
+%where $Agent$ is the person or the body part of the person which initiates the action; $Motion$ implies the movement of the $Agent$; $Target$ can be taken to be an object or another person or his body part that is involved in the interaction. Using this terminology some simple action representations can be generated as shown below:
+%
+%\begin{itemize}
+%\item \textbf{Handshake}: $<$Arm1 - Outstretched - Arm2$>$
+%\item \textbf{Kicking}: $<$Leg1 - Outstretched - Leg2$>$
+%\end{itemize}
+%
+%It should be noted that for some actions that \textit{Agent} and \textit{Target} need not necessarily be a single person or body part but can be a collection of body parts that act on each other in a causal way. 
+%\begin{figure}[ht]
+%\centering
+%
+%  \includegraphics[scale = 0.3]{action_des.png}%
+%  \label{Fig:act_des}%
+%
+%\end{figure}
+%To see an example of this, consider the figure~\ref{Fig:act_des}. Thus, we can see that actions that have similar semantic descriptions in terms of the operational triplet can be differentiated by means of proper temporal constraints. 
+%
+%\begin{figure}[ht]
+%\centering
+%
+%  \includegraphics[scale = 0.3]{dec_tree.png}%
+%  \label{Fig:tree}%
+%
+%\end{figure}
+%
+%<<<<<<< HEAD
+%To look at how spatial constraints can decide the type of interaction, we incorporate that knowledge in the decision tree structure shown in figure~\ref{Fig:tree}.
+%
+%
+%\subsection{Artificial Feed-forward Neural Network}
+%We use artificial feed-forward neural network with softmax activation function as its final layer to estimate conditional probability, $P(y_t|x_t,t=t_{ac})$ at time instance $t$, where $y_t$ is an action class label and $x_t$ is the skeleton features computed from $t-20$ to $t+20$ frames and $t_{ac}$ is the time instance of the action center frame. We manually localize the action center frame of the training sequences and train the model with 10 hidden layers.
+%=======
 %\subsection{Artificial Feed-forward Neural Network}
 
 %We use artificial feed-forward neural network with softmax activation function as its final layer to estimate conditional probability, $P(y_t|x_t,t=t_{ac})$ at time instance $t$, where $y_t$ is an action class label and $x_t$ is the skeleton features computed from $t-20$ to $t+20$ frames and $t_{ac}$ is the time instance of the action center frame. We manually localize the action center frame of the training sequences and train the model with 10 hidden layers.
@@ -165,7 +173,7 @@ Thus, we can see that actions that have similar semantic descriptions in terms o
 %In testing time, we apply the trained neural network in a time sliding window manner and obtain the conditional probability $P(y_t|x_t,t=t_{ac})$. We also apply our action center detector at each frame to obtain $P(t=t_{ac}|x_t)$. We then compute $P(y_t,t=t_{ac}|x_t)=P(y_t|x_t,t=t_{ac}) P(t=t_{ac}|x_t)$ at each frame. Finally, we compute $P(y)$ for each sequence by $\sum_{t=t_{s}}^{t_{e}} P(y_t,t=t_{ac}|x_t)$ where $t_{s}$ and $t_{e}$ are the time instance where there are sufficient number of frames to apply the neural network. The final prediction is done by $\argmax_{y} P(y)$.
 
 \section{Joint Action Localization and Classification}
-In Sec.\ref{sec:actionlocalization}, we propose a heuristic approach for action localization where the aim is to automatically determine when the action starts and ends. The problem of this approach is that it is not designed to achieve better classification accuracy. Also it is purely subjective to define the start and the end of the action.
+In Sec.\ref{sec:actionlocalization}, we proposed a heuristic approach for action localization where the aim is to automatically determine when the action starts and ends. The problem of this approach is that it is not designed to achieve better classification accuracy. Also it is purely subjective to define the start and the end of the action.
 
 Thus, we propose a method which can do both tasks simultaneously. In the proposed method, the training does not require manual labeling of the starting and ending frame of each action sequence. The model is trained in such a way that the starting and ending frame are determined in order to maximize the discriminativeness of the model. 
 
@@ -232,17 +240,6 @@ The training is done by iteratively executing the above two steps while the decr
 Though we can use random values for the initial values for $h$, it is often desired to give a better initial values for $h$. We use the results of the heuristic approach described in Sec.\ref{sec:actionlocalization} as our initial values for $h$.
 
 
-
-
-
-
-
-
-
-
-
-
-
 \section{Experiments}
 
 \subsection{Data Collection}
@@ -271,11 +268,88 @@ Our new data, MIAD differs from the existing two people interactive dataset such
 %The skeleton representation provides a convenient way to represent different actions in the form of Action trees. The terminal nodes of each action tree consists of the 20 joint positions. For each action, based on how different joint nodes combine to perform that action we can develop the corresponding action tree. 
 
 \subsection{Action Localization Results}
-Show the examples of the starting frame, center frame and the ending frame.
+In this section we show some sample results of our Action localization procedure described in Section~\ref{sec:act_local}. 
+\begin{figure}[ht]
+
+\includegraphics[scale=0.3]{act_local.png}
+\caption{Distance Profile before(left) and after(right) localization}
+\label{Fig:act_loc}
+
+\end{figure}
+Figure~\ref{Fig:act_loc} shows the difference in the distance profiles between the raw action sequence and the processed action sequence. As can be seen from Figure~\ref{Fig:act_loc}, the processed distance profile shows an appromiately zoomed in portion of the original profile. This localized region represents the frames in the given Video as to where the interaction takes place. 
+
+\begin{figure}[ht]
+
+\includegraphics[scale=0.3]{first_last.png}
+\caption{Start(Top) and End(Bottom) Frames}
+\label{Fig:top_bot}
+\end{figure}
+
+Figure~\ref{Fig:top_bot} shows the start and end frames corresponding to the above action profiles. Thus, we use this simple heuristic method to extract only the relevant portion of the action sequence and provide this as input to our Feature extraction operator. 
+
 
 \subsection{Action Classification Results}
-Show confusion matrix.
-Give some discussion on difficult action classes.
+To classify a given test input to one of the action classes, we learn a discriminative mapping between the input space and the output action label space. In the training stage, we learn the parameters of this mapping/classifier and apply them to classify the test input. In this work, we have used the following classification methods:
+\begin{itemize}
+\item Support Vector Machines (SVM): one (vs) one, one (vs) all 
+\item k- Nearest Neighbour: k = 1,4
+\item Classification Trees
+\end{itemize}
+
+SVM's are desgined to handle binary classification problems. To use them for multi-class classification, we use two paradigms which are explained as follows:
+\begin{itemize}
+\item \textbf{1(vs)1}: In this case, for each class combination $(i,j)$ one binary classifier is learnt. Thus for a $N$ class problem, the total number of classifiers becomes $\frac{N(N-1)}{2}$. 
+
+\item \textbf{1(vs)all}: In this case, for each class $i$ in the training set, one classifier is learnt. The positive examples for this classifier are the inputs from class $i$ while the ngative examples are the rest of the inputs from all other classes. Thus, $N$ classifiers are learnt, one per class. 
+\end{itemize}
+
+Since SVM's produce only the decision values for a multi-class setting, we use Platt scaling as described in \cite{Platt1999} to convert these decision values to valid posterior probability estimates. Thus, for each classifier, for each test input $x_t$, we obtain the posterior probability measure $p(y=i|x_t)$, where $i$ is any class label between $\{1,10\}$ and assign that $i$  to $x_t$ which maximizes the probability measure. 
+For each of these methods, we use different experimental settings by using different amounts of training and test data for each setting. The parameters for SVM are tuned using cross-validation  on the training set. 
+
+\begin{table}[ht] 
+\caption{Classification Accuracy} % title of Table 
+\centering % used for centering table 
+\begin{tabular}{c c c c c c} % centered columns (5 columns) 
+\hline\hline %inserts double horizontal lines 
+Split-Ratio  & SVM(1-1) & (1-all) & knn-1 & knn-4 & CT\\ [0.5ex] % inserts table 
+%heading 
+\hline % inserts single horizontal line 
+20:80 &	18.4	 & 29.5  & 21.4 & 11.2 & 23.4 \\
+40:60 &	17.4 &	33.3 & 26.1	& 18.8 &	 23.1 \\
+60:40 &	26.5	 & 40.8	 & 32.7	& 20.4 &	 \textbf{28.6} \\
+80:20 &	\textbf{40}   &	\textbf{50}	 & \textbf{40}	& \textbf{40}	   & 25 \\  [1ex]
+\hline %inserts single line 
+\end{tabular} 
+\label{table:acc} % is used to refer this table in the text 
+\end{table} 
+
+\begin{figure}[ht]
+\includegraphics[scale=0.18]{conf_svm_ovr.png}
+\caption{Confusion matrix for the best performing classification method (SVM one-vs-all). Darker color indicates larger values}
+\label{Fig:conf_mat}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[scale=0.1]{svm_ovr_lc.png}
+\caption{Learning Curve for SVM one-vs-all method}
+
+\label{Fig:lc}
+\end{figure}
+
+The results for our classification method are shown in Table~\ref{table:acc}. Figure~\ref{Fig:conf_mat} shows the confusion matrix for the best performing classification method. The learning curve for the best performing classifier is shown in Figure~\ref{Fig:lc}.
+
+\subsection*{Discussion}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.3]{sh_conf.png}
+\caption{Variants of the shake hands action (Labels 1 and 2)}
+\label{Fig:sh_conf}
+\end{figure}
+From the confusion matrix in Figure~\ref{Fig:conf_mat}, we can observe that the most confusing actions correspond to labels ${1,2}$ and ${5,6}$. Both labels ${1,2}$ correspond  to variations of the shaking hands action, one being the normal way and the other being an upright shake hands action. The scenario is shown in Figure~\ref{Fig:sh_conf}. Given that these actions are very difficult to distinguish and that different people perform these actions in different ways (such that the disriminative aspect is lost), the features extracted from the limited training data that we have could not clearly distinguish between these actions. 
+
+Labels ${4,5,6}$ correspond to exchanging objects; box, ball and cup respectively. These could be more accurately classified by giving an additional information to the classifier involving the description of the object that appears in these frames. This part is a work under progress where we are trying to find an effective way to obtain an object description that would not be very computationally expensive. 
+Furthermore, the learning curve in Figure~\ref{Fig:lc} shows that our model has very high variance, since the test error is much higher than the error on the training set. This implies that we can bridge the gap and thus improve the accuracy of our method by using more training data. 
 
 \section{Conclusion}
 
@@ -302,6 +376,12 @@ Give some discussion on difficult action classes.
 	\emph{Two-person Interaction Detection Using Body-Pose Features and Multiple Instance Learning}.
 	CVPRW,
 	2012.
+	
+	\bibitem{Platt1999}
+	John C. Platt,
+	\emph{Probabilistic Outputs for Support Vector Machines and Comparisons to Regularized Likelihood Methods}.
+	ADVANCES IN LARGE MARGIN CLASSIFIERS, MIT Press, 1999.
+	 
 	
 
 \bibitem{LatentSVM} Learning structural SVMs with latent variables, Chun-Nam John Yu and Thorsten Joachims, ICML'09.
