@@ -76,7 +76,12 @@ Action recognition from the body skeleton information has been actively studied 
 
 %They compute the translation and rotation between each pair of body parts and map it to the tangent space to obtain a feature vector. 
 
-For the recognition part, we develop an algorithm which not only predicts the action class but also localizes frames where actions are taking place. This is done by using Latent Structured SVM framework. Specifically, we treat the staring and ending frames of the action as latent variables and jointly optimize the cost function in a max-margin manner. Note that this method does not require annotation for latent variables as they are automatically determined in the optimization process.
+For the recognition part, we develop an algorithm which not only predicts the action class but also localizes frames where actions are taking place. We perform this using two methods.
+\begin{itemize}
+\item In the first method, we use a heuristic Action Localization method described in Section 2. We extract the features on the localized frames and use popular techniques like SVM, K-nn and Classification trees in a mutli-class classification setting to get the action class labels. 
+\item In the second method, we propose a Latent Structured SVM framework for localizing action and recognizing the action label. Specifically, we treat the staring and ending frames of the action as latent variables and jointly optimize the cost function in a max-margin manner. Note that this method does not require annotation for latent variables as they are automatically determined in the optimization process.
+\end{itemize}
+ In this work, we show the results only for the first method. The worl related to second method is under progress. 
 
 
 The paper is organized as follows: Section 2 describes the proposed skeleton representation at each frame. Section 3 explains our heuristic action localization method. Section 4 presents the Joint Action Localization and Detection method that we propose, using a Latent Structural SVM framework. The comparison to some state-of-art approaches is done in Section 5. The Results are shown in Section 6, followed by Conclusion in Section 7.
@@ -315,10 +320,10 @@ For each of these methods, we use different experimental settings by using diffe
 Split-Ratio  & SVM(1-1) & (1-all) & knn-1 & knn-4 & CT\\ [0.5ex] % inserts table 
 %heading 
 \hline % inserts single horizontal line 
-20:80 &	18.4	 & 29.5  & 21.4 & 11.2 & 23.4 \\
-40:60 &	17.4 &	33.3 & 26.1	& 18.8 &	 23.1 \\
-60:40 &	26.5	 & 40.8	 & 32.7	& 20.4 &	 \textbf{28.6} \\
-80:20 &	\textbf{40}   &	\textbf{50}	 & \textbf{40}	& \textbf{40}	   & 25 \\  [1ex]
+20:80 &	18.4	 & 10.7  & 21.4 & 11.2 & 23.4 \\
+40:60 &	17.4 &	23.2 & 26.1	& 18.8 &	 23.1 \\
+60:40 &	26.5	 & 32.2	 & 32.7	& 20.4 &	 \textbf{28.6} \\
+80:20 &	\textbf{40}   &	\textbf{51.8}	 & \textbf{40}	& \textbf{40}	   & 25 \\  [1ex]
 \hline %inserts single line 
 \end{tabular} 
 \label{table:acc} % is used to refer this table in the text 
