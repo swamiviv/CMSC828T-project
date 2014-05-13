@@ -57,7 +57,7 @@ Center for Automation Research, University of Maryland, College Park, MD 20742\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-In this work, we propose
+In this work, we propose 
    
 \end{abstract}
 
@@ -82,7 +82,7 @@ For the recognition part, we develop an algorithm which not only predicts the ac
 The paper is organized as follows. In section 2, we show some related work. Section 3 explains our action localization method. Then we describe, in section 4, the proposed skeleton representation at each frame. Section 5 presents the interpolation method to obtain a final feature vector as well as the classification methods we propose. The experimental results are shown in section 6, followed by the conclusion in section 7.
 
 
-\section{Related Work}
+
 
 \section{Heuristic Approach for Action Localization}\label{sec:actionlocalization}
 
@@ -239,6 +239,12 @@ The training is done by iteratively executing the above two steps while the decr
 
 Though we can use random values for the initial values for $h$, it is often desired to give a better initial values for $h$. We use the results of the heuristic approach described in Sec.\ref{sec:actionlocalization} as our initial values for $h$.
 
+\section{Comparison to State-of-Art}
+The problem of Action Recongition has been studied for different purposes by different communities including Computer Vision and Robotics. Most of the earlier approaches concentrate on recogizing Single Person Actions. Being a tough problem in its own right, the more interesting and informative actions are one that take place between a group of people. As a specific case, this work concentrates on Two-person interactions. There have been quite a few works that approach the same problem. These could be braodly divided into two categories: Semantic and Discriminative. An example of a Semantic approach is \cite{SUHA}, which builds a discriminative model by describing an action as an operational triplet : $<Agent-Motion-Target>$. They enumerate all possible combinations of the operational triplet in terms of different body parts and the different poses that they take. To impose temporal consistency, a dynamic Bayesian network is used and action classification is performed for each frame over a given video. Another work closest to the Action Localization decribed in the previous section is the Similarity Constrained Latent SVM, where they present an algorithm that learns from input videos that have action labels, and produces a classifier that can label test videos and mark a discriminative region of interest.
+
+The novelty in our work comes from the fact that we extend the Skeleton Representation work of \cite{Vemulapalli2013} to two-person Interaction sequences. We have also described a Latent SVM based approach to perform joint Action localization and recognition, which has not been performed for Action involving more than one person. 
+
+
 
 \section{Experiments}
 
@@ -352,7 +358,7 @@ Labels ${4,5,6}$ correspond to exchanging objects; box, ball and cup respectivel
 Furthermore, the learning curve in Figure~\ref{Fig:lc} shows that our model has very high variance, since the test error is much higher than the error on the training set. This implies that we can bridge the gap and thus improve the accuracy of our method by using more training data. 
 
 \section{Conclusion}
-
+In this work, we have attempted to classify Interactions involving two people. For this purpose, we have collected a database of Interactions that involve exchange of object and greeting actions. We have extended the existing state-of-art Skeleton representation technique to two-person Interaction sequences. The results were obtained by building a discriminative mapping between the action sequences and the action labels. We used several classifiers including SVM, k-nearest neighbour and Classification Trees. We demonstrated the limitations of such an approach given a minimal training dataset. We further hope to extend this work using the Latent-svm formulation to simultaneously detect and localize the action in an given input sequence. Furthermore, we are also exploring the use of attributes as a tool for classification, while also deriving suitable interpretation of an action sequence as would be described by a human. 
 
 \begin{thebibliography}{9}
 
