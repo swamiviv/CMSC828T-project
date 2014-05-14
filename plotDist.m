@@ -1,9 +1,9 @@
 function [dist,frames] = plotDist(dirName)
 
-if(exist(strcat(dirName,'/depthMetaData.mat')) > 0)
-    data=load(strcat(dirName,'/depthMetaData.mat'));
-else
+if(exist(strcat(dirName,'/depthMetaDataClean.mat')) > 0)
     data=load(strcat(dirName,'/depthMetaDataClean.mat'));
+else
+    data=load(strcat(dirName,'/depthMetaData.mat'));
 end
 fname = fieldnames(data);
 depthMetaData = getfield(data,fname{1});
