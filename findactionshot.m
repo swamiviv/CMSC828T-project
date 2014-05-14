@@ -14,7 +14,7 @@ thres = 0.05;
  actionCenter = frames(idx(min(find(val > 0))));
  %before the action
  startFrame = max(frames(1),actionCenter-wsize);
- endFrame = startFrame + wsize;
+ endFrame = min(startFrame + wsize,length(dist));
  percChange = abs(diff(dist(startFrame:endFrame)))./dist(startFrame:endFrame-1);
  percChange(isnan(percChange)) = 1e+6;
  idbefore = max(find(percChange > 2*thres));
