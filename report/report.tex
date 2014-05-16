@@ -312,10 +312,12 @@ Since SVM's produce only the decision values for a multi-class setting, we use P
 Split-Ratio  & SVM(1-1) & (1-all) & knn-1 & knn-4 & CT\\ [0.5ex] % inserts table 
 %heading 
 \hline % inserts single horizontal line 
-20:80 &	18.4	 & 10.7  & 21.4 & 11.2 & 23.4 \\
-40:60 &	17.4 &	23.2 & 26.1	& 18.8 &	 23.1 \\
-60:40 &	26.5	 & 32.2	 & 32.7	& 27.1 &	 \textbf{36.6} \\
-80:20 &	\textbf{40}   &	\textbf{51.8}	 & \textbf{41}	& \textbf{34}	   & 29 \\  [1ex]
+
+20:80 &	24.28 &	34.85 &	26.32 &	23.06 &	10.61 \\
+40:60 &	29.85 & 43.71 &	32.17 &	30.72 &	32.46 \\
+50:50 & 	33.33 & 46.46 & 37 &  20.73 & 36.06 \\
+60:40 &	35.51 &	51.9	  & \textbf{41.63} &	32.24 &	38.36 \\
+80:20 &	\textbf{43}    & 	\textbf{57}    &	37 &	 \textbf{33} & 	\textbf{47}  \\  [1ex]
 \hline %inserts single line 
 \end{tabular} 
 \label{table:acc} % is used to refer this table in the text 
@@ -323,7 +325,7 @@ Split-Ratio  & SVM(1-1) & (1-all) & knn-1 & knn-4 & CT\\ [0.5ex] % inserts table
 
 \begin{figure}[ht]
 \includegraphics[scale=0.16]{conf_svm_ovr.png}
-\caption{Confusion matrix for the best performing classification method (SVM one-vs-all). Darker color indicates larger values}
+\caption{Confusion matrix for the best performing classification method using heuristic action localization(SVM one-vs-all). Darker color indicates larger values}
 \label{Fig:conf_mat}
 \end{figure}
 
@@ -347,9 +349,6 @@ Both labels ${1,2}$ correspond  to variations of the shaking hands action, one b
 \end{figure}
 
 \subsubsection{Joint Action Localization and Recognition}
-We evaluate our proposed joint action localization and recognition method. The classification accuracy for 50:50 split is 58\%, which outperforms all the baseline method. More over, our method can also localize the action frames. The confusion matrix is shown in Table \ref{tb:conf_joint} and some sample localization results are shown in Fig.\ref{Fig:act_loc_2}.
-
-From the confusion matrix in Table \ref{tb:conf_joint}, we can observe that the most difficult action to recognize is 'Exchange a Box'. By inspecting the recorded sequences, we found out that many of the upper body joints are occluded by the box, which we believe makes the recognition hard. This problem is also observed for 'Exchange a Chair' class, which makes the accuracy low for this class.
 
 \begin{figure}
 \centering
@@ -377,6 +376,13 @@ From the confusion matrix in Table \ref{tb:conf_joint}, we can observe that the 
    \end{tabular}
 \end{center}
 \end{table*}
+
+
+We evaluate our proposed joint action localization and recognition method. The classification accuracy for 50:50 split is 58\%, which outperforms all the baseline method. More over, our method can also localize the action frames. The confusion matrix is shown in Table \ref{tb:conf_joint} and some sample localization results are shown in Fig.\ref{Fig:act_loc_2}.
+
+From the confusion matrix in Table \ref{tb:conf_joint}, we can observe that the most difficult action to recognize is 'Exchange a Box'. By inspecting the recorded sequences, we found out that many of the upper body joints are occluded by the box, which we believe makes the recognition hard. This problem is also observed for 'Exchange a Chair' class, which makes the accuracy low for this class.
+
+
 
 
 

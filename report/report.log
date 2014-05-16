@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.2.10)  13 MAY 2014 12:23
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.2.10)  16 MAY 2014 11:49
 entering extended mode
  %&-line parsing enabled.
 **report.tex
@@ -460,19 +460,42 @@ File: omsptm.fd
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 81.
- [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+Underfull \hbox (badness 1584) in paragraph at lines 81--82
+[]\OT1/ptm/m/n/10 (Baseline), we use a heuris-tic ac-tion lo-cal-iza-tion
+ []
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
-] <skeleton.pdf, id=20, 201.285pt x 273.13943pt>
+]
+Underfull \hbox (badness 1783) in paragraph at lines 114--115
+[]\OT1/ptm/m/n/10 We de-fine our skele-ton rep-re-sen-ta-tion for the first
+ []
+
+
+Underfull \hbox (badness 5331) in paragraph at lines 114--115
+\OT1/ptm/m/n/10 per-son as $\OML/cmm/m/it/10 S[] \OT1/cmr/m/n/10 = (\OML/cmm/m/
+it/10 V[]; E[]\OT1/cmr/m/n/10 )$\OT1/ptm/m/n/10 , where $\OML/cmm/m/it/10 V[] \
+OT1/cmr/m/n/10 =
+ []
+
+
+
+pdfTeX warning: pdflatex (file ./skeleton.pdf): PDF inclusion: found PDF versio
+n <1.5>, but at most version <1.4> allowed
+<skeleton.pdf, id=20, 398.06715pt x 537.94298pt>
 File: skeleton.pdf Graphic file (type pdf)
+ <use skeleton.pdf> [2]
+Underfull \vbox (badness 1308) has occurred while \output is active []
 
-<use skeleton.pdf> [2]
-Overfull \hbox (9.56332pt too wide) detected at line 222
+
+Overfull \hbox (16.96333pt too wide) detected at line 212
 [][] []
  []
 
 
-Overfull \hbox (10.67448pt too wide) in paragraph at lines 235--235
+Overfull \hbox (18.0745pt too wide) in paragraph at lines 225--225
 [] 
  []
 
@@ -480,83 +503,87 @@ Overfull \hbox (10.67448pt too wide) in paragraph at lines 235--235
 
 pdfTeX warning: pdflatex (file ./newactions.pdf): PDF inclusion: found PDF vers
 ion <1.5>, but at most version <1.4> allowed
-<newactions.pdf, id=74, 1043.9pt x 351.3125pt>
+<newactions.pdf, id=211, 1043.9pt x 351.3125pt>
 File: newactions.pdf Graphic file (type pdf)
  <use newactions.pdf>
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 277.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 267.
 
 
-LaTeX Warning: Reference `sec:act_local' on page 4 undefined on input line 277.
+LaTeX Warning: Reference `sec:act_local' on page 4 undefined on input line 267.
 
 
-<act_local.png, id=78, 717.68124pt x 265.99374pt>
+<act_local.png, id=215, 717.68124pt x 265.99374pt>
 File: act_local.png Graphic file (type png)
  <use act_local.png>
-Underfull \hbox (badness 1043) in paragraph at lines 277--286
-\OT1/ptm/m/n/10 Ac-tion lo-cal-iza-tion pro-ce-dure de-scribed in Sec-tion [].
- []
-
-<first_last.png, id=81, 666.49pt x 450.68375pt>
+<first_last.png, id=218, 666.49pt x 450.68375pt>
 File: first_last.png Graphic file (type png)
- <use first_last.png> [4 <./act_local.png (PNG copy)> <./first_last.png (PNG co
-py)>]
-Overfull \hbox (9.57245pt too wide) in paragraph at lines 318--330
+ <use first_last.png>
+Underfull \vbox (badness 5771) has occurred while \output is active []
+
+ [4 <./act_local.png (PNG copy)> <./first_last.png (PNG copy)>]
+Overfull \hbox (14.57245pt too wide) in paragraph at lines 310--324
  [][] 
  []
 
-<conf_svm_ovr.png, id=98, 1489.565pt x 900.163pt>
+<conf_svm_ovr.png, id=234, 1489.565pt x 900.163pt>
 File: conf_svm_ovr.png Graphic file (type png)
  <use conf_svm_ovr.png>
-Overfull \hbox (1.19933pt too wide) in paragraph at lines 333--334
+Overfull \hbox (1.19933pt too wide) in paragraph at lines 327--328
 [][] 
  []
 
-<svm_ovr_lc.png, id=99, 1489.565pt x 900.163pt>
+<svm_ovr_lc.png, id=235, 1489.565pt x 900.163pt>
 File: svm_ovr_lc.png Graphic file (type png)
- <use svm_ovr_lc.png>
-Overfull \hbox (30.97418pt too wide) in paragraph at lines 340--341
+ <use svm_ovr_lc.png> [5 <./newactions.pdf> <./conf_svm_ovr.png (PNG copy)>]
+<sh_conf.png, id=307, 575.14874pt x 238.8925pt>
+File: sh_conf.png Graphic file (type png)
+ <use sh_conf.png>
+<sample_localization_by_lsvm.png, id=308, 1284.8pt x 1050.92625pt>
+File: sample_localization_by_lsvm.png Graphic file (type png)
+
+<use sample_localization_by_lsvm.png>
+Overfull \hbox (1.35527pt too wide) in paragraph at lines 355--356
  [][] 
  []
 
-[5 <./newactions.pdf> <./conf_svm_ovr.png (PNG copy)>]
-<sh_conf.png, id=169, 575.14874pt x 238.8925pt>
-File: sh_conf.png Graphic file (type png)
- <use sh_conf.png> (./report.brf)
+(./report.brf)
 \tf@brf=\write3
 \openout3 = `report.brf'.
 
- [6 <./svm_ovr_lc.png (PNG copy)> <./sh_conf.png (PNG copy)>] (./report.aux)
+ [6 <./svm_ovr_lc.png (PNG copy)> <./sh_conf.png (PNG copy)> <./sample_localiza
+tion_by_lsvm.png>] [7
+
+] (./report.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 7320 strings out of 495061
- 106027 string characters out of 1182621
- 194166 words of memory out of 3000000
- 10297 multiletter control sequences out of 15000+50000
- 24547 words of font info for 64 fonts, out of 3000000 for 9000
+ 7348 strings out of 495061
+ 106462 string characters out of 1182621
+ 194420 words of memory out of 3000000
+ 10313 multiletter control sequences out of 15000+50000
+ 28042 words of font info for 73 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 44i,10n,42p,1358b,355s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 44i,12n,42p,1358b,404s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-texli
 ve/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/ty
 pe1/public/amsfonts/cm/cmbx7.pfb></usr/share/texmf-texlive/fonts/type1/public/a
 msfonts/cm/cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
-cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb>
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/
-texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texliv
-e/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type1
-/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfo
-nts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy
-5.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/
-share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-
-texlive/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-texlive/fonts/type
-1/urw/times/utmb8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.p
-fb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (6 pages, 1767390 bytes).
+cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi7.pfb><
+/usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/t
+exmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-texlive/
+fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1
+/public/amsfonts/cm/cmsy5.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmsy7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy
+9.pfb></usr/share/texmf-texlive/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/
+texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-texlive/fonts/
+type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr
+i8a.pfb>
+Output written on report.pdf (7 pages, 3564614 bytes).
 PDF statistics:
- 247 PDF objects out of 1000 (max. 8388607)
- 37 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 397 PDF objects out of 1000 (max. 8388607)
+ 42 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
