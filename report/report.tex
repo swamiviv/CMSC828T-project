@@ -57,32 +57,35 @@ Center for Automation Research, University of Maryland, College Park, MD 20742\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-In this work, we propose
+In this work, we deal with the problem of recognizing actions that involve interaction between two people. For this purpose, we have created a dataset that involves ten different interactive actions using the Kinect Sensor. We extract discriminative features from the Skeleton data obtained from Kinect by extending the framework of \cite{Vemulapalli2013} to two person interactions. Further, we propose a Simultaneous Action detection and localization method using the Latent Structural SVM framework, where the latent variables are the start and end frames of an action in the given input video. We demonstrate the effectiveness of our approach over simple multi-class classfication methods.
    
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
-Human action recognition has been a major problem in computer vision community for many years. There are many applications of the human action recognition such as surveillance, health-care and human computer interaction. Most of the previous works focus on action recognition of a single person. The action classes considered in this scenario is limited to a simple action such as walking, running and jumping. 
+Human action recognition has been a major problem in computer vision community for many years. There are many applications of action recognition such as surveillance, health-care and human computer interaction. Most of the previous works focus on action recognition of a single person. The action classes considered in those works are limited to simple actions such as walking, running and jumping. 
 
-On the other hand, there are several works which deal with action classes involved with multiple people. These action classes are more complex to recognize than the single-person actions due to the complexity of the actions. The actions are defined not only by the motion of one person but also their interactive motions. We call these multiple-people actions as interactive actions.
+There are several works which deal with action classes involved with multiple people. These classes are more complex to recognize than the single-person actions due to the complexity of the actions. The actions are defined not only by the motion of one person but also their interactive motions. We call these multiple-people actions as interactive actions.
 
 The examples of interactive actions we consider in this work are exchanging objects and greetings between two people. For exchanging objects, we consider different types of the objects such as cards, a ball and a chair. Depending on the object being exchanged, their interactive movement come out in a different form. For greetings, we consider interactive actions such as shaking hands and bowing. Our goal is to recognize these different types of interactive actions from the 3d skeleton information.
 
 
-Action recognition from the body skeleton information has been actively studied due to the advance of motion capture systems such as Kinect. Typically the skeleton information is given in the form of 3d locations of a set of body joints. Many action recognition systems directly use these information as the input or convert the location information into a set of joint angles and then use them as the input. The focus of most of the previous research has been on the recognition part. 
+Action recognition from the body skeleton information has been actively studied due to the advancement of motion capture systems such as Kinect. Typically the skeleton information is given in the form of 3d locations of a set of body joints. Many action recognition systems directly use these information as the input or convert the location information into a set of joint angles and then use them as the input. The focus of most of the previous research has been on the recognition part. 
 
-\cite{Vemulapalli2013} proposed a new skeleton representation based on relative geometry across body parts and achieve the state of the art results on several standard single-person action recognition datasets. They compute the translation and rotation between each pair of body parts and map it to the tangent space to obtain a feature vector. The benefit of their approach compared to the previously adopted skeleton representation is that their representation can directly capture the relationship between body parts that are not directly connected each other. Thus, it is more capable of recognizing actions in which the relationship between non-connected body parts, such as left arm and right arm, is more important.
+\cite{Vemulapalli2013} proposed a new skeleton representation based on relative geometry across body parts that achieves state of art results on several standard single-person action recognition datasets. The benefit of their approach compared to the previously adopted skeleton representation is that their representation can directly capture the relationship between body parts that are not directly connected each other. Thus, it is more capable of recognizing actions in which the relationship between non-connected body parts, such as left arm and right arm, is more important. In this work, we extend \cite{Vemulapalli2013} to classify actions performed by two people.
 
-In this work, we extend \cite{Vemulapalli2013} to classify actions performed by two people. In our skeleton representation, in addition to the relative geometry across body parts within one person, we also consider relative geometry between body parts across two people. We believe that this representation enables us to capture two people's interaction well. For instance, our representation can captures the geometric relationship between a left arm of a person A and a right arm of a person B, which might be helpful to recognize the 'shaking hands' actions.
+%They compute the translation and rotation between each pair of body parts and map it to the tangent space to obtain a feature vector. 
 
-For the recognition part, we develop an algorithm which not only predicts the action class but also localizes frames where actions are taking place. This is done by using Latent Structured SVM framework. Specifically, we treat the staring and ending frames of the action as latent variables and jointly optimize the cost function in a max-margin manner. Note that this method does not require annotation for latent variables as they are automatically determined in the optimization process.
+For the recognition part, we develop an algorithm which not only predicts the action class but also localizes frames where actions are taking place. We perform this using two methods.
+\begin{itemize}
+\item (Baseline), we use a heuristic action localization method described in Section 2. We extract the features on the localized frames and use popular techniques like SVM, K-nn and Classification trees in a mutli-class classification setting to get the action class labels. 
+\item (Proposed method) we use a Latent Structured SVM framework for localizing action and recognizing the action label simultaneously. Specifically, we treat the staring and ending frames of the action as latent variables and jointly optimize the cost function in a max-margin manner. Note that this method does not require annotation for latent variables as they are automatically determined in the optimization process.
+\end{itemize}
+ Our experiments indicate the effectiveness of the latent structured SVM based method over the baseline method.
 
 
-The paper is organized as follows. In section 2, we show some related work. Section 3 explains our action localization method. Then we describe, in section 4, the proposed skeleton representation at each frame. Section 5 presents the interpolation method to obtain a final feature vector as well as the classification methods we propose. The experimental results are shown in section 6, followed by the conclusion in section 7.
+The paper is organized as follows: Section 2 describes the proposed skeleton representation at each frame. Section 3 explains our heuristic action localization method. Section 4 presents the Joint Action Localization and Detection method that we propose, using a Latent Structural SVM framework. The comparison to some state-of-art approaches is done in Section 5. The Results are shown in Section 6, followed by Conclusion in Section 7.
 
-
-\section{Related Work}
 
 \section{Heuristic Approach for Action Localization}\label{sec:actionlocalization}
 
@@ -106,14 +109,15 @@ As can be observed, this method does not yield us exact localization but an appr
 
 \section{Skeleton Representation}\label{sec:Feat}
 
+The underlying notion of using a skeleton representation for human actions is that the human motion can be represented as a set of rigid body motions, where the rigid bodies are the different body joints. The output from the Kinect sensor is 3d positions of 20 body joints for each person defined in the global coordinate. Since most of our action classes only involve with upper body motion, in this work we use only 12 upper body joints ( See Fig.\ref{fig:skeleton}).
 
-The output from the Kinect sensor is 3d positions of 20 body joints for each person defined in the global coordinate. We define our skeleton representation for the first person as $S^{(1)}=(V^{(1)},E^{(1)})$, where $V^{(1)}=\{v_{1}^{(1)},v_{2}^{(1)},\dots,v_{N}^{(1)}\}, N=20$ denotes the set of joints and $E^{(1)}=\{e_{1}^{(1)},e_{2}^{(1)},\dots,e_{M}^{(1)}\}, M=19$ denotes the set of body parts ( See Fig.\ref{fig:skeleton}). Let $e_{m1}^{(1)},e_{m2}^{(1)} \in \mathcal{R}^3$ represents the starting and ending points of the body part $e_{m}^{(1)}$. Similarly we have $S^{(2)}=(V^{(2)},E^{(2)})$ for the second person.
+We define our skeleton representation for the first person as $S^{(1)}=(V^{(1)},E^{(1)})$, where $V^{(1)}=\{v_{1}^{(1)},v_{2}^{(1)},\dots,v_{N}^{(1)}\}, N=12$ denotes the set of joints and $E^{(1)}=\{e_{1}^{(1)},e_{2}^{(1)},\dots,e_{M}^{(1)}\}, M=11$ denotes the set of body parts  Let $e_{m1}^{(1)},e_{m2}^{(1)} \in \mathcal{R}^3$ represents the starting and ending points of the body part $e_{m}^{(1)}$. Similarly we have $S^{(2)}=(V^{(2)},E^{(2)})$ for the second person.
 
 First, we define the person specific local coordinate at the first person's shoulder center computed as $(v_5 + v_6)/2$ such that the x coordinate is aligned with the person's body orientation. Then we update both $S^{(1)}=(V^{(1)},E^{(1)})$ and $S^{(2)}=(V^{(2)},E^{(2)})$ using this new coordinates. This process makes our representation invariant to the global translation and orientation. 
 
 Next we consider a set of body parts, $E=\{E^{(1)},E^{(2)}\}$, and for each pair of body parts $e_m$ and $e_n$, in $E$, we describe their relative geometry by the translation and rotation. The translation is computed as $T_{m,n}=e_{m1}-e_{n1}$. For the rotation, we compute the rotation axis $r$ and the rotation angle $\theta$ between two vectors $e_{n2}-e_{n1}$ and $e_{m2}-e_{m1}$. From them we compute a quaternion $q_{m,n} \in \mathcal{R}^4$ by $q_1=r_1 sin( \frac{\theta}{2} ), q_2=r_2 sin( \frac{\theta}{2} ), q_3=r_3 sin( \frac{\theta}{2}), q_4=cin( \frac{\theta}{2})$.
 
-Thus, each pair of parts can be represented as 7 dimensional vector. Since there are $\binom{38}{2}$ such pairs, we have $\binom{38}{2} \times 7 = 4921$ dimensional vector. We do the same step by using the second person's local coordinate and concatenate two vectors to obtain the final feature vector representing two people configurations at a current frame.
+Thus, each pair of parts can be represented as 7 dimensional vector. Since there are $\binom{22}{2}$ such pairs, we have $\binom{22}{2} \times 7 = 1617$ dimensional vector. We do the same step by using the second person's local coordinate and concatenate two vectors to obtain the final feature vector representing two people configurations at a current frame.
 
 \begin{figure}[htb]
 \begin{center}
@@ -122,7 +126,7 @@ Thus, each pair of parts can be represented as 7 dimensional vector. Since there
 \end{center}
 \end{figure}
 
-We compute our skeleton feature across 41 frames which includes the action center frame, 20 frames before the action center frame and 20 frames after the action center frame. Finally we concatenate all the feature vectors into a final vector.
+To extract features from a sequence of frames specified by a starting frame and ending frame, we first compute our skeleton feature vectors at each frame between the starting frame and ending frame. In order to obtain a fixed length vector regardless of the number of frames, we apply temporal interpolation at each dimension of the feature vector to sample values at 20 uniformly distributed time instances. Finally we concatenate all the feature vectors into a final vector. Thus, the length of the final vector extracted from frames between the given starting frame and ending frame is $20 \times 3234 = 64680$.
 
 %\section{Action Classification}
 %We propose two different methods for classifying interactive actions from the skeleton features.
@@ -159,13 +163,7 @@ We compute our skeleton feature across 41 frames which includes the action cente
 %
 %\end{figure}
 %
-%<<<<<<< HEAD
-%To look at how spatial constraints can decide the type of interaction, we incorporate that knowledge in the decision tree structure shown in figure~\ref{Fig:tree}.
-%
-%
-%\subsection{Artificial Feed-forward Neural Network}
-%We use artificial feed-forward neural network with softmax activation function as its final layer to estimate conditional probability, $P(y_t|x_t,t=t_{ac})$ at time instance $t$, where $y_t$ is an action class label and $x_t$ is the skeleton features computed from $t-20$ to $t+20$ frames and $t_{ac}$ is the time instance of the action center frame. We manually localize the action center frame of the training sequences and train the model with 10 hidden layers.
-%=======
+
 %\subsection{Artificial Feed-forward Neural Network}
 
 %We use artificial feed-forward neural network with softmax activation function as its final layer to estimate conditional probability, $P(y_t|x_t,t=t_{ac})$ at time instance $t$, where $y_t$ is an action class label and $x_t$ is the skeleton features computed from $t-20$ to $t+20$ frames and $t_{ac}$ is the time instance of the action center frame. We manually localize the action center frame of the training sequences and train the model with 10 hidden layers.
@@ -175,14 +173,13 @@ We compute our skeleton feature across 41 frames which includes the action cente
 \section{Joint Action Localization and Classification}
 In Sec.\ref{sec:actionlocalization}, we proposed a heuristic approach for action localization where the aim is to automatically determine when the action starts and ends. The problem of this approach is that it is not designed to achieve better classification accuracy. Also it is purely subjective to define the start and the end of the action.
 
-Thus, we propose a method which can do both tasks simultaneously. In the proposed method, the training does not require manual labeling of the starting and ending frame of each action sequence. The model is trained in such a way that the starting and ending frame are determined in order to maximize the discriminativeness of the model. 
+Thus, we propose a method which can do both tasks simultaneously. In the proposed method, the training does not require manual labeling of the starting and ending frame of each action sequence. The model is trained in such a way that the starting and ending frame are determined in order to maximize the discriminative power of the model. 
 
 Our method is based on a latent structured SVM framework \cite{LatentSVM}. In this framework, we are given a set of training data
 \begin{align*}
 \mathcal{S}=\{(x_1,y_1),\dots,(x_N,y_N)\} \in (\mathcal{X},\mathcal{Y})^N
-\end{align*},
-where in our case, $x$ is 3d joint positions over a whole sequence and $y$ is an action class label.
-Let $h$ denote a latent variable, which specifies the starting and ending frame of the sequence.
+\end{align*}
+where in our case, $x$ is skeleton feature extracted from a whole sequence and $y$ is an action class label. Let $h$ denote a latent variable, which specifies the starting and ending frame of the sequence.
 
 The prediction is done by finding $h$ and $y$ which maximize the following scoring function:
 \begin{align}\label{eq:prediction}
@@ -191,6 +188,7 @@ f_{\mathbf{w}}(x) = \argmax_{(y,h) \in \mathcal{Y} \times \mathcal{H}} [ \mathbf
 where $\Phi(x,y,h)$ is a joint feature map. As a result, we not only obtain the predicted action class but also the starting and ending frame of the action in the given sequence.
 
 In this work, the joint feature map $\Phi(x,y,h)$ is computed as follows. We first extract skeleton features explained in Sec.\ref{sec:Feat} from frames between starting frame and ending frame specified by $h$. We then construct $\Phi$ by setting $y$-th section of $\Phi$ to $x^{*}$ and remaining part to 0:
+
 \begin{equation}\label{M}
 \Phi =
 \begin{pmatrix}
@@ -233,6 +231,10 @@ The training is done by iteratively executing the above two steps while the decr
 
 %Though we can use random values for the initial values for $h$, it is often desired to give a better initial values for $h$. 
 
+\section{Comparison to State-of-Art}
+The problem of Action Recongition has been studied for different purposes by different communities including Computer Vision and Robotics. Most of the earlier approaches concentrate on recogizing Single Person Actions. Being a tough problem in its own right, the more interesting and informative actions are one that take place between a group of people. As a specific case, this work concentrates on Two-person interactions. There have been quite a few works that approach the same problem. These could be braodly divided into two categories: Semantic and Discriminative. An example of a Semantic approach is \cite{SUHA}, which builds a discriminative model by describing an action as an operational triplet : $<Agent-Motion-Target>$. They enumerate all possible combinations of the operational triplet in terms of different body parts and the different poses that they take. To impose temporal consistency, a dynamic Bayesian network is used and action classification is performed for each frame over a given video. Another work closest to the Action Localization decribed in the previous section is the Similarity Constrained Latent SVM, where they present an algorithm that learns from input videos that have action labels, and produces a classifier that can label test videos and mark a discriminative region of interest.
+
+The novelty in our work comes from the fact that we extend the Skeleton Representation work of \cite{Vemulapalli2013} to two-person Interaction sequences. In our skeleton representation, in addition to the relative geometry across body parts within one person, we have also considered relative geometry between body parts across two people. We believe that this representation enables us to capture two person interactions well. For instance, our representation can capture the geometric relationship between a left arm of a person A and a right arm of a person B, which might be helpful to recognize the 'shaking hands' actions. The Latent SVM based approach that has been proposed in this work to perform Joint Action localization and Recognition has not been done previously for actions involving more than one person. 
 
 \section{Experiments}
 
@@ -309,23 +311,24 @@ Since SVM's produce only the decision values for a multi-class setting, we use P
 Split-Ratio  & SVM(1-1) & (1-all) & knn-1 & knn-4 & CT\\ [0.5ex] % inserts table 
 %heading 
 \hline % inserts single horizontal line 
-20:80 &	18.4	 & 29.5  & 21.4 & 11.2 & 23.4 \\
-40:60 &	17.4 &	33.3 & 26.1	& 18.8 &	 23.1 \\
-60:40 &	26.5	 & 40.8	 & 32.7	& 20.4 &	 \textbf{28.6} \\
-80:20 &	\textbf{40}   &	\textbf{50}	 & \textbf{40}	& \textbf{40}	   & 25 \\  [1ex]
+20:80 &	18.4	 & 10.7  & 21.4 & 11.2 & 23.4 \\
+40:60 &	17.4 &	23.2 & 26.1	& 18.8 &	 23.1 \\
+60:40 &	26.5	 & 32.2	 & 32.7	& 27.1 &	 \textbf{36.6} \\
+80:20 &	\textbf{40}   &	\textbf{51.8}	 & \textbf{41}	& \textbf{34}	   & 29 \\  [1ex]
 \hline %inserts single line 
 \end{tabular} 
 \label{table:acc} % is used to refer this table in the text 
 \end{table} 
 
 \begin{figure}[ht]
-\includegraphics[scale=0.18]{conf_svm_ovr.png}
+\includegraphics[scale=0.16]{conf_svm_ovr.png}
 \caption{Confusion matrix for the best performing classification method (SVM one-vs-all). Darker color indicates larger values}
 \label{Fig:conf_mat}
 \end{figure}
 
 \begin{figure}[ht]
-\includegraphics[scale=0.1]{svm_ovr_lc.png}
+\centering
+\includegraphics[scale=0.18]{svm_ovr_lc.png}
 \caption{Learning Curve for SVM one-vs-all method}
 
 \label{Fig:lc}
@@ -344,7 +347,7 @@ We evaluate our proposed joint action localization and recognition method. The c
 \end{figure}
 
 
-\subsection{Discussion}
+\section{Discussion}
 
 \begin{figure}[ht]
 \centering
@@ -358,7 +361,7 @@ Labels ${4,5,6}$ correspond to exchanging objects; box, ball and cup respectivel
 Furthermore, the learning curve in Figure~\ref{Fig:lc} shows that our model has very high variance, since the test error is much higher than the error on the training set. This implies that we can bridge the gap and thus improve the accuracy of our method by using more training data. 
 
 \section{Conclusion}
-
+In this work, we have attempted to classify Interactions involving two people. For this purpose, we have collected a database of Interactions that involve exchange of object and greeting actions. We have extended the existing state-of-art skeleton representation technique to two-person interaction sequences. The results were obtained by building a discriminative mapping between the action sequences and the action labels. We used several classifiers including SVM, k-nearest neighbour and Classification Trees. We also propose a method based on the latent structured SVM where action localization and recognition is jointly addressed. Furthermore, we are also exploring the use of attributes as a tool for classification, while also deriving suitable interpretation of an action sequence as would be described by a human. 
 
 \begin{thebibliography}{9}
 
