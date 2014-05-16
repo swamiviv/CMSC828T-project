@@ -57,7 +57,7 @@ Center for Automation Research, University of Maryland, College Park, MD 20742\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-In this work, we deal with the problem of recognizing actions that involve interaction between two people. For this purpose, we have created a dataset that involves ten different interactive actions using the Kinect Sensor. We extract discriminative features from the Skeleton data obtained from Kinect by extending the framework of \cite{Vemulapalli2013} to two person interactions. Further, we propose a Simultaneous Action detection and localization method using the Latent Structural SVM framework, where the latent variables are the start and end frames of an action in the given input video. We demonstrate the effectiveness of our approach over simple multi-class classfication methods.
+In this work, we deal with the problem of recognizing actions that involve interaction between two people. For this purpose, we have created a dataset that involves ten different interactive actions using the Kinect Sensor. We extract discriminative features from the Skeleton data obtained from Kinect by extending the framework of \cite{Vemulapalli2013} to two person interactions. Further, we propose a simultaneous action detection and localization method using the latent structural SVM framework, where the latent variables are the start and end frames of an action in the given input video. We demonstrate the effectiveness of our approach over simple multi-class classfication methods.
    
 \end{abstract}
 
@@ -265,8 +265,9 @@ Our new data, MIAD differs from the existing two people interactive dataset such
 
 \subsection{Action Localization Results}
 In this section we show some sample results of our Action localization procedure described in Section~\ref{sec:act_local}. 
-\begin{figure}[ht]
 
+\begin{figure}[ht]
+\centering
 \includegraphics[scale=0.3]{act_local.png}
 \caption{Distance Profile before(left) and after(right) localization}
 \label{Fig:act_loc}
@@ -275,7 +276,7 @@ In this section we show some sample results of our Action localization procedure
 Figure~\ref{Fig:act_loc} shows the difference in the distance profiles between the raw action sequence and the processed action sequence. As can be seen from Figure~\ref{Fig:act_loc}, the processed distance profile shows an approximately zoomed in portion of the original profile. This localized region represents the frames in the given video as to where the interaction takes place. 
 
 \begin{figure}[ht]
-
+\centering
 \includegraphics[scale=0.3]{first_last.png}
 \caption{Start(Top) and End(Bottom) Frames}
 \label{Fig:top_bot}
@@ -328,37 +329,63 @@ Split-Ratio  & SVM(1-1) & (1-all) & knn-1 & knn-4 & CT\\ [0.5ex] % inserts table
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.18]{svm_ovr_lc.png}
+\includegraphics[scale=0.14]{svm_ovr_lc.png}
 \caption{Learning Curve for SVM one-vs-all method}
 
 \label{Fig:lc}
 \end{figure}
 
-The results for our classification method are shown in Table~\ref{table:acc}. Figure~\ref{Fig:conf_mat} shows the confusion matrix for the best performing classification method at 80:20 split. The learning curve for the best performing classifier is shown in Figure~\ref{Fig:lc}.
+The results for our classification method are shown in Table~\ref{table:acc}. Figure~\ref{Fig:conf_mat} shows the confusion matrix for the best performing classification method at 80:20 split. The learning curve for the best performing classifier is shown in Figure~\ref{Fig:lc}. The learning curve shows that our model has very high variance, since the test error is much higher than the error on the training set. This implies that we can bridge the gap and thus improve the accuracy of our method by using more training data. 
+
+Both labels ${1,2}$ correspond  to variations of the shaking hands action, one being the normal way and the other being an upright shake hands action. The scenario is shown in Figure~\ref{Fig:sh_conf}. Given that these actions are very difficult to distinguish and that different people perform these actions in different ways (such that the disriminative aspect is lost), the features extracted from the limited training data that we have could not clearly distinguish between these actions. 
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.4]{sh_conf.png}
+\caption{Variants of the shake hands action (Labels 1 and 2)}
+\label{Fig:sh_conf}
+\end{figure}
 
 \subsubsection{Joint Action Localization and Recognition}
-We evaluate our proposed joint action localization and recognition method. The classification accuracy for 50:50 split is 58\%, which outperforms all the baseline method. More over, our method can also localize the action frames. Some sample localization results are shown in Fig.\ref{Fig:act_loc_2}.
+We evaluate our proposed joint action localization and recognition method. The classification accuracy for 50:50 split is 58\%, which outperforms all the baseline method. More over, our method can also localize the action frames. The confusion matrix is shown in Table \ref{tb:conf_joint} and some sample localization results are shown in Fig.\ref{Fig:act_loc_2}.
+
+From the confusion matrix in Table \ref{tb:conf_joint}, we can observe that the most difficult action to recognize is 'Exchange a Box'. By inspecting the recorded sequences, we found out that many of the upper body joints are occluded by the box, which we believe makes the recognition hard. This problem is also observed for 'Exchange a Chair' class, which makes the accuracy low for this class.
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.3]{sh_conf.png}
+\includegraphics[width=3.3in]{sample_localization_by_lsvm.png}
 \caption{Sample action localization results}
 \label{Fig:act_loc_2}
 \end{figure}
 
+\begin{table*}[t]
+\small
+\begin{center}
+  \caption{Confusion matrix of the proposed joint action localization and recognition method\label{tb:conf_joint}}
+  \begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|} \hline
+   & \shortstack{ Shake \\ Hands 1} & \shortstack{ Shake \\ Hands 2} & \shortstack{ Exchange \\ Cards} & \shortstack{ Exchange \\ a Ball} & \shortstack{ Exchange \\ a Box} & \shortstack{ Exchange \\ a Cup} & \shortstack{ Exchange \\ a Chair} & Bow & \shortstack{ Fist \\ Bump} & High 10 \\ \hline
+   \shortstack{ Shake \\ Hands 1} & 33 & 0 & 0 & 17 & 0 & 50 & 0 & 0 & 0 & 0 \\ \hline
+   \shortstack{ Shake \\ Hands 2} & 0 & 50 & 0 & 0 & 0 & 33 & 0 & 0 & 0 & 17 \\ \hline
+   \shortstack{ Exchange \\ Cards} & 0 & 0 & 67 & 17 & 0 & 17 & 0 & 0 & 0 & 0 \\ \hline
+   \shortstack{ Exchange \\ a Ball} & 17 & 0 & 0 & 33 & 0 & 33 & 0 & 0 & 17 & 0 \\ \hline
+   \shortstack{ Exchange \\ a Box} & 17 & 0 & 17 & 50 & 0 & 0 & 0 & 0 & 17 & 0 \\ \hline 
+   \shortstack{ Exchange \\ a Cup} & 0 & 0 & 25 & 0 & 0 & 75 & 0 & 0 & 0 & 0 \\ \hline
+   \shortstack{ Exchange \\ a Chair} & 0 & 0 & 0 & 17 & 0 & 33 & 17 & 33 & 0 & 0 \\ \hline
+   Bow & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 100 & 0 & 0 \\ \hline
+   \shortstack{ Fist \\ Bump} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 100 & 0 \\ \hline
+   High 10 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 100 \\ \hline
+   \end{tabular}
+\end{center}
+\end{table*}
 
-\section{Discussion}
 
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.3]{sh_conf.png}
-\caption{Variants of the shake hands action (Labels 1 and 2)}
-\label{Fig:sh_conf}
-\end{figure}
-From the confusion matrix in Figure~\ref{Fig:conf_mat}, we can observe that the most confusing actions correspond to labels ${1,2}$ and ${5,6}$. Both labels ${1,2}$ correspond  to variations of the shaking hands action, one being the normal way and the other being an upright shake hands action. The scenario is shown in Figure~\ref{Fig:sh_conf}. Given that these actions are very difficult to distinguish and that different people perform these actions in different ways (such that the disriminative aspect is lost), the features extracted from the limited training data that we have could not clearly distinguish between these actions. 
 
-Labels ${4,5,6}$ correspond to exchanging objects; box, ball and cup respectively. These could be more accurately classified by giving an additional information to the classifier involving the description of the object that appears in these frames. This part is a work under progress where we are trying to find an effective way to obtain an object description that would not be very computationally expensive. 
-Furthermore, the learning curve in Figure~\ref{Fig:lc} shows that our model has very high variance, since the test error is much higher than the error on the training set. This implies that we can bridge the gap and thus improve the accuracy of our method by using more training data. 
+
+\section{Future Work}
+
+Actions involved in exchanging objects such as box, ball and cup could be more accurately classified by giving an additional information to the classifier involving the description of the object that appears in these frames. This part is a work under progress where we are trying to find an effective way to obtain an object description that would not be very computationally expensive. 
+
+
 
 \section{Conclusion}
 In this work, we have attempted to classify Interactions involving two people. For this purpose, we have collected a database of Interactions that involve exchange of object and greeting actions. We have extended the existing state-of-art skeleton representation technique to two-person interaction sequences. The results were obtained by building a discriminative mapping between the action sequences and the action labels. We used several classifiers including SVM, k-nearest neighbour and Classification Trees. We also propose a method based on the latent structured SVM where action localization and recognition is jointly addressed. Furthermore, we are also exploring the use of attributes as a tool for classification, while also deriving suitable interpretation of an action sequence as would be described by a human. 
